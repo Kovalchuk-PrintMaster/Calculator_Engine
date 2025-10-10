@@ -1,0 +1,72 @@
+# =============================================================================
+# Application runtime dependencies (Calculator Engine)
+# -----------------------------------------------------------------------------
+# This file lists ONLY runtime deps for the backend service.
+# Dev/test tools (pytest, black, ruff, httpx, etc.) live in requirements/dev.txt.
+#
+# Versioning strategy:
+# - Use compatible lower bounds (>=) during early development.
+# - Once modules stabilize, we'll pin with ~= or exact pins via a lock file.
+# =============================================================================
+
+fastapi>=0.115.0
+# Web framework for building typed HTTP APIs (ASGI).
+# Why: first-class type hints, automatic request/response validation via Pydantic,
+#      OpenAPI/Swagger docs generation (/docs, /redoc), great developer velocity.
+# Notes:
+# - Exposes our ASGI app (`calculator_engine.app.main:app`).
+# - Plays nicely with Starlette middlewares and Uvicorn.
+# - We’ll keep handlers thin: routing in app/, business rules in domain/.
+
+uvicorn[standard]>=0.30.0
+# High-performance ASGI server to run FastAPI.
+# Why: lightweight, fast, widely adopted in production for Python ASGI apps.
+# "[standard]" extras include:
+#   - uvloop (faster event loop), httptools (HTTP parser), websockets, watchfiles (reload)
+# Dev vs Prod:
+#   - Dev: `uvicorn ... --reload` for auto-reload.
+#   - Prod: run without --reload; consider `--workers N` behind a reverse proxy.
+
+SQLAlchemy>=2.0
+# ORM + SQL toolkit (v2.0 style) for PostgreSQL access.
+# Why: explicit 2.0 API (async/await support if needed later), composable queries,
+#      migrations-friendly (Alembic later), powerful for bulk operations (pricing policies).
+# Notes:
+# - We’ll use Core/ORM selectively; business logic stays DB-agnostic in domain/.
+# - JSONB support will be used for flexible attributes (with proper indexing).
+
+pydantic>=2.7
+# Data validation & settings modeling used by FastAPI.
+# Why: validates and serializes request/response models; strict types; great error messages.
+# Notes:
+# - v2 is faster (pydantic-core) and has different APIs vs v1.
+# - We use TypedDicts for ultra-lightweight internal shapes, Pydantic models for API I/O.
+
+pydantic-settings>=2.4
+# Optional settings loader on top of Pydantic v2.
+# Why: when we switch from current stdlib (tomllib+env) to a declarative config layer,
+#      this will centralize env/TOML merging and validation in one place.
+# Notes:
+# - Not strictly required yet (we currently load with stdlib), but planned.
+
+psycopg[binary]>=3.1
+# PostgreSQL driver (psycopg3) for SQLAlchemy.
+# Why: modern async-capable driver, better performance than psycopg2 in many cases.
+# "[binary]" includes prebuilt binary wheels (libpq), simplifying installs on CI/WSL.
+# Notes:
+# - DSN style: postgresql+psycopg://user:pass@host:5432/dbname
+# - For alpine/docker-musl builds, consider non-binary variant if image size matters.
+
+redis>=5.0
+# Redis client (redis-py) for cache and (later) background jobs/queues.
+# Why: fast in-memory caching for /price/quote, ephemeral state, key-based invalidation.
+# Notes:
+# - URL: redis://host:6379/0
+# - We’ll design cache keys to include rules_version to avoid stale pricing.
+
+python-dotenv>=1.0
+# Loads environment variables from a .env file (development convenience).
+# Why: simple local configuration without exporting variables manually.
+# Notes:
+# - In production, prefer real secret managers; .env is for local/dev only.
+# - VS Code can auto-load .env via settings (`python.envFile`).
