@@ -1,0 +1,12 @@
+{"ts": "2025-11-09T12:54:00.622911+00:00", "level": "INFO", "logger": "doctor", "msg": "Doctor run result", "request_id": "48f21de6-6d74-4a7a-843b-d9521d0d4233", "context": {"overall": "ok", "checks": [{"name": "config", "status": "ok", "detail": "Основні налаштування присутні"}, {"name": "postgres-config", "status": "ok", "detail": "DSN: postgresql+psycopg://user:pass@localhost:5432/app"}]}}
+{"ts": "2025-11-09T12:54:00.624798+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/meta/doctor \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.629837+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/health \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.631171+00:00", "level": "INFO", "logger": "price", "msg": "test-log", "context": {"k": "v"}}
+{"ts": "2025-11-09T12:54:00.651982+00:00", "level": "INFO", "logger": "price", "msg": "log-with-request-id", "request_id": "req-123", "context": {"k": "v"}}
+{"ts": "2025-11-09T12:54:00.694531+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/meta/ping \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.697783+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/meta/info \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.701256+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/price/quote \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.704577+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/price/quote \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.707404+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: POST http://testserver/price/quote \"HTTP/1.1 400 Bad Request\""}
+{"ts": "2025-11-09T12:54:00.711486+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/health \"HTTP/1.1 200 OK\""}
+{"ts": "2025-11-09T12:54:00.714779+00:00", "level": "INFO", "logger": "httpx", "msg": "HTTP Request: GET http://testserver/meta/ping \"HTTP/1.1 200 OK\""}

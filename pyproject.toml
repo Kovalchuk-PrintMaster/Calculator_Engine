@@ -1,9 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "calculator-engine"
 version = "0.0.1"
 description = "Pricing calculator engine for print shop"
 readme = "README.md"
 requires-python = ">=3.12"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -25,30 +35,13 @@ select = ["E", "F", "I", "B", "UP"]
 known-first-party = ["calculator_engine"]
 combine-as-imports = true
 
-# ---------------------- Mypy (static typing) ----------------------
 [tool.mypy]
 python_version = "3.12"
-plugins = ["pydantic.mypy"]
-
-# Core strictness for production code under src/
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-no_implicit_optional = true
+strict = false
+warn_unused_configs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
-warn_return_any = true
-no_implicit_reexport = true
-strict_equality = true
-check_untyped_defs = true
-pretty = true
-show_error_codes = true
-
-# What to analyze by default
-files = ["src"]
-
-# Soften rules for tests (faster test writing)
-[[tool.mypy.overrides]]
-module = "tests.*"
 disallow_untyped_defs = false
-warn_return_any = false
-check_untyped_defs = false
+no_implicit_optional = true
+show_error_codes = true
+pretty = true

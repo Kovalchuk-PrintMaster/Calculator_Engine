@@ -44,3 +44,5 @@ mypy>=1.10.0       # Static type checker for Python; helps catch bugs pre-runtim
 
 # Optional plugin: improves Pydantic types inference (safe to enable now, even if used lightly).
 pydantic>=2.7      # already in app.txt via -r, but listed here to keep plugin compatibility clear
+# --- Alembic (міграції БД) ---
+alembic>=1.14.0

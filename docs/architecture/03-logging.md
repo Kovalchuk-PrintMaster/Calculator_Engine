@@ -59,8 +59,8 @@
 
 ```python
 import logging
-from calculator_engine.infra.logging.setup import setup_logging
-from calculator_engine.infra.logging.request_id import REQUEST_ID_VAR
+from calculator_engine.django_infra.logging.setup import setup_logging
+from calculator_engine.django_infra.logging.request_id import REQUEST_ID_VAR
 
 setup_logging(debug=True, enable_csv=False)
 
@@ -129,7 +129,7 @@ logger.info("price calculated", extra={"context": {"job_id": 123}})
 * Перевірити наявність `request_id` у записі:
 
   ```python
-  from calculator_engine.infra.logging.request_id import REQUEST_ID_VAR
+  from calculator_engine.django_infra.logging.request_id import REQUEST_ID_VAR
 
   def test_request_id_appears_in_log_records(caplog):
       setup_logging(debug=True, enable_csv=False)

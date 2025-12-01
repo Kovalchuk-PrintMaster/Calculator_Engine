@@ -1,1 +1,13 @@
+# Конфіг локального оточення (ENV=dev)
+
+env = "dev"
 debug = true
+app_name = "Calculator Engine"
+
+# Піднімаємося до контейнерів через проброс портів на localhost
+postgres_dsn = "postgresql+psycopg://calc_user:calc_pass@127.0.0.1:5432/calculator"
+redis_url = "redis://127.0.0.1:6379/0"
+
+# S3 — заглушки/плейсхолдери для деву
+s3_endpoint = "https://s3.example.com"
+s3_bucket_backups = "calc-backups-dev"

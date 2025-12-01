@@ -1,0 +1,190 @@
+.
+├── Makefile
+├── README.md
+├── apps
+│   ├── admin
+│   │   ├── calc_admin
+│   │   │   ├── __init__.py
+│   │   │   ├── asgi.py
+│   │   │   ├── settings.py
+│   │   │   ├── urls.py
+│   │   │   └── wsgi.py
+│   │   ├── catalog
+│   │   │   ├── __init__.py
+│   │   │   ├── admin
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── admin_sizes.py
+│   │   │   ├── admin.py
+│   │   │   ├── apps.py
+│   │   │   ├── migrations
+│   │   │   │   └── __init__.py
+│   │   │   ├── models
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── init.py
+│   │   │   │   ├── model_material_aliases.py
+│   │   │   │   ├── model_materials.py
+│   │   │   │   ├── model_product_kinds.py
+│   │   │   │   └── model_sizes.py
+│   │   │   ├── models.py
+│   │   │   ├── tests.py
+│   │   │   └── views.py
+│   │   └── manage.py
+│   └── api
+│       └── src
+│           ├── calculator_engine
+│           │   ├── __init__.py
+│           │   ├── app
+│           │   │   ├── __init__.py
+│           │   │   ├── main.py
+│           │   │   ├── middleware.py
+│           │   │   └── routers
+│           │   │       ├── __init__.py
+│           │   │       ├── doctor.py
+│           │   │       ├── materials.py
+│           │   │       ├── meta.py
+│           │   │       └── price.py
+│           │   ├── config
+│           │   │   ├── __init__.py
+│           │   │   ├── paths.py
+│           │   │   └── settings.py
+│           │   ├── domain
+│           │   │   ├── __init__.py
+│           │   │   ├── doctor
+│           │   │   │   └── checks.py
+│           │   │   └── pricing
+│           │   │       ├── __init__.py
+│           │   │       └── core.py
+│           │   ├── infra
+│           │   │   ├── __init__.py
+│           │   │   ├── cache
+│           │   │   │   └── __init__.py
+│           │   │   ├── db
+│           │   │   │   ├── __init__.py
+│           │   │   │   ├── base.py
+│           │   │   │   ├── engine.py
+│           │   │   │   ├── models
+│           │   │   │   │   └── material.py
+│           │   │   │   └── session.py
+│           │   │   ├── logging
+│           │   │   │   ├── request_id.py
+│           │   │   │   └── setup.py
+│           │   │   └── storage
+│           │   │       └── __init__.py
+│           │   ├── scripts
+│           │   │   └── db_ping.py
+│           │   └── shared
+│           │       ├── __init__.py
+│           │       ├── constants.py
+│           │       └── request_context.py
+│           └── calculator_engine.egg-info
+│               ├── PKG-INFO
+│               ├── SOURCES.txt
+│               ├── dependency_links.txt
+│               └── top_level.txt
+├── config
+│   ├── base.toml
+│   ├── dev.toml
+│   └── paths.py
+├── data
+│   ├── backups
+│   │   ├── db_20251112_173126.dump
+│   │   ├── db_SEL_material_aliases_20251113_145357.dump
+│   │   ├── db_SEL_materials_20251118_075622.dump
+│   │   ├── db_SEL_product_kind_print_colors_20251118_075429.dump
+│   │   ├── db_SEL_sizes_20251116_154123.dump
+│   │   └── db_SEL_sizes_20251116_173757.dump
+│   ├── data_base
+│   │   ├── media_for_print.xlsx
+│   │   ├── post_process.xlsx
+│   │   └── product&size.xlsx
+│   └── seeds
+│       ├── 03_sizes.sql
+│       └── 04_product_kind_print_colors.sql
+├── docs
+│   ├── README.md
+│   ├── architecture
+│   │   ├── 01-HandBook.md
+│   │   ├── 02-architecture.md
+│   │   ├── 03-logging.md
+│   │   ├── 04-db.md
+│   │   ├── data-model.md
+│   │   ├── decisions
+│   │   │   └── ADR-0001-structure.md
+│   │   ├── overview.md
+│   │   └── project_tree.md
+│   ├── db
+│   │   ├── README.md
+│   │   ├── backups.md
+│   │   ├── indexing.md
+│   │   ├── migrations.md
+│   │   ├── schema
+│   │   │   └── tables.md
+│   │   └── schema.md
+│   ├── modules
+│   │   ├── admin.md
+│   │   ├── api.md
+│   │   ├── pricing.md
+│   │   └── rules.md
+│   ├── ops
+│   │   ├── ci.md
+│   │   └── runbooks
+│   │       └── local-dev.md
+│   ├── project_config
+│   │   ├── check_list.md
+│   │   ├── project_structure.txt
+│   │   ├── project_target
+│   │   └── script_structure.txt
+│   ├── reference
+│   │   ├── constants.md
+│   │   └── settings.md
+│   └── style
+│       └── test.txt
+├── exec
+├── infra
+│   ├── db
+│   │   ├── alembic
+│   │   │   ├── env.py
+│   │   │   └── versions
+│   │   │       ├── 20251109_0001_init_materials.py
+│   │   │       ├── 20251111_0002_print_colors.py
+│   │   │       ├── 20251111_0003_catalog_core.py
+│   │   │       ├── 20251111_0004_pk_fix_print_colors.py
+│   │   │       ├── 20251111_0005_seed_basics.py
+│   │   │       └── 20251111_0006_merge_heads.py
+│   │   ├── alembic.ini
+│   │   └── seeds
+│   └── docker
+│       └── docker-compose.yml
+├── logs
+│   ├── app.csv
+│   ├── app.jsonl
+│   ├── autentification
+│   │   └── auth.jsonl
+│   └── data_base
+│       └── db.jsonl
+├── pyproject.toml
+├── requirements
+│   ├── admin.txt
+│   ├── app.txt
+│   └── dev.txt
+├── source
+│   └── utils
+│       └── db
+├── tests
+│   └── unit
+│       ├── test_doctor.py
+│       ├── test_health_endpoint.py
+│       ├── test_logging_basic.py
+│       ├── test_logging_request_id.py
+│       ├── test_meta_router.py
+│       ├── test_price_quote.py
+│       ├── test_request_id_middleware.py
+│       └── test_sanity.py
+├── tmp
+├── tools
+│   └── db
+│       ├── db_dump_select.py
+│       └── db_restore.py
+└── tree.txt
+
+60 directories, 128 files
