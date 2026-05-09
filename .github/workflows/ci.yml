@@ -31,6 +31,8 @@ jobs:
         run: python -m black --check .
 
       - name: Type check (mypy)
+        env:
+          PYTHONPATH: apps/api/backend:.
         run: python -m mypy
 
       - name: Django check
