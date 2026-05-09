@@ -1,5 +1,5 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 # --- База
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --- Env
 try:
     from dotenv import load_dotenv
+
     load_dotenv(BASE_DIR.parent / ".env")
 except Exception:
     pass
@@ -34,9 +35,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "import_export",
     "catalog.apps.CatalogConfig",
-
 ]
-IMPORT_EXPORT_USE_TRANSACTIONS = True   # щоб імпорт був атомарним
+IMPORT_EXPORT_USE_TRANSACTIONS = True  # щоб імпорт був атомарним
 
 # --- Middleware
 MIDDLEWARE = [

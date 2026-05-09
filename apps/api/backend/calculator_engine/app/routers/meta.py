@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from typing_extensions import Literal
+from typing import Literal
 
 from fastapi import APIRouter
 from pydantic import BaseModel
 
 from calculator_engine.shared.config import app_config
-
 
 router = APIRouter(
     prefix="/meta",

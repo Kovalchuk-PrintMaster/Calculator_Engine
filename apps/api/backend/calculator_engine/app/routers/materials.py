@@ -40,8 +40,8 @@ def list_materials() -> list[dict]:
             status_code=503,
             detail=(
                 "Таблиця 'materials' недоступна. Переконайтесь, що виконано міграції "
-                "(make alembic-up). Помилка: {err}"
-            ).format(err=exc),
-        )
+                f"(make alembic-up). Помилка: {exc}"
+            ),
+        ) from exc
     # На цьому кроці навмисно повертаємо порожній список — API вже стабільне.
     return []

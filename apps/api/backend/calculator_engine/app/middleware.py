@@ -9,7 +9,6 @@ Middleware-шар для додаткових перехоплень:
 
 from __future__ import annotations
 
-import typing as _t
 import uuid
 
 from fastapi import Request, Response

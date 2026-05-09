@@ -41,9 +41,7 @@ for _info in pkgutil.iter_modules(
             continue
 
         if _name in globals() and globals()[_name] is not _value:
-            raise RuntimeError(
-                f"Duplicate model export detected in catalog.models: {_name}"
-            )
+            raise RuntimeError(f"Duplicate model export detected in catalog.models: {_name}")
 
         globals()[_name] = _value
         __all__.append(_name)

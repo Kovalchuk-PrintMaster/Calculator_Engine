@@ -54,14 +54,13 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-
 # ============================================================================
 # Базові шляхи проєкту
 # ============================================================================
 
 SCRIPT_FILE = Path(__file__).resolve()
-APP_DIR = SCRIPT_FILE.parents[2]          # .../calculator_engine/app
-PROJECT_ROOT = APP_DIR.parent             # .../calculator_engine
+APP_DIR = SCRIPT_FILE.parents[2]  # .../calculator_engine/app
+PROJECT_ROOT = APP_DIR.parent  # .../calculator_engine
 COMPOSE_FILE = APP_DIR / "infra" / "docker" / "docker-compose.yml"
 ENV_FILE = PROJECT_ROOT / "config" / ".env"
 BACKUP_DIR = PROJECT_ROOT / "data" / "backups"
@@ -74,6 +73,7 @@ DEBUG = os.environ.get("DEBUG") == "1"
 # ============================================================================
 # Допоміжні функції
 # ============================================================================
+
 
 def validate_paths() -> None:
     """Перевіряє наявність ключових файлів і каталогів."""
@@ -164,8 +164,7 @@ def psql_at(query: str) -> str:
     cp = dc_exec_sh(
         (
             'psql -U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" '
-            '-d "$POSTGRES_DB" -Atc '
-            + shlex.quote(query)
+            '-d "$POSTGRES_DB" -Atc ' + shlex.quote(query)
         ),
         capture=True,
         check=True,
@@ -176,8 +175,7 @@ def psql_at(query: str) -> str:
 def list_public_tables() -> list[str]:
     """Повертає список таблиць зі schema public."""
     rows = psql_at(
-        "SELECT tablename FROM pg_catalog.pg_tables "
-        "WHERE schemaname='public' ORDER BY 1"
+        "SELECT tablename FROM pg_catalog.pg_tables " "WHERE schemaname='public' ORDER BY 1"
     )
     if not rows:
         return []
@@ -203,8 +201,8 @@ def copy_dump_to_container(tmp_inside: str, tables: list[str]) -> None:
     """Створює custom dump у контейнері для вказаних таблиць."""
     tflags = " ".join(f"-t public.{table}" for table in tables)
     script = (
-        'set -e; '
-        'pg_dump --enable-row-security '
+        "set -e; "
+        "pg_dump --enable-row-security "
         '-U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" -d "$POSTGRES_DB" '
         f'-F c -Z 6 {tflags} -f "{tmp_inside}"'
     )
@@ -270,6 +268,7 @@ def count_rows_via_toc_listfile(tmp_inside: str, toc_id: int) -> int:
 # Основна логіка
 # ============================================================================
 
+
 def main() -> int:
     """Головна точка входу скрипта."""
     validate_paths()
@@ -278,7 +277,9 @@ def main() -> int:
     print("Зчитую список таблиць з public...")
 
     if not tables:
-        print("  (нема таблиць у public — можливо, БД порожня або ви відновили тільки частину стану).")
+        print(
+            "  (нема таблиць у public — можливо, БД порожня або ви відновили тільки частину стану)."
+        )
         return 1
 
     for index, table in enumerate(tables, 1):
@@ -373,7 +374,9 @@ def main() -> int:
 
     if total_before > 0 and total_dump == 0:
         suspect = True
-        print("  \x1b[31m⚠️  ПОПЕРЕДЖЕННЯ: у БД були рядки, а в дампі пораховано 0. Перевірте RLS/права.\x1b[0m")
+        print(
+            "  \x1b[31m⚠️  ПОПЕРЕДЖЕННЯ: у БД були рядки, а в дампі пораховано 0. Перевірте RLS/права.\x1b[0m"
+        )
 
     print("* Рядки у dump — за селективним екстрагуванням конкретних TABLE DATA (TOC -L).")
 

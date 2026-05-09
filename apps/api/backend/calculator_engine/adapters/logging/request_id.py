@@ -13,8 +13,7 @@
 from __future__ import annotations
 
 from contextvars import ContextVar
-from typing import Optional
 
 # Контекстна змінна: в межах одного запиту (асинхронного контексту)
 # тримає ідентифікатор request_id.
-REQUEST_ID_VAR: ContextVar[Optional[str]] = ContextVar("request_id", default=None)
+REQUEST_ID_VAR: ContextVar[str | None] = ContextVar("request_id", default=None)

@@ -1,8 +1,10 @@
 # apps/admin/catalog/admin/admin_sizes.py
 from django.contrib import admin
-from import_export import resources, fields
+from import_export import fields, resources
 from import_export.admin import ImportExportModelAdmin
-from ..models import Size, ProductKind
+
+from ..models import ProductKind, Size
+
 
 class SizeResource(resources.ModelResource):
     # простий lookup по коду виду (замість FK id) — зручно для XLSX
@@ -10,13 +12,18 @@ class SizeResource(resources.ModelResource):
 
     class Meta:
         model = Size
-        import_id_fields = ("code",)   # upsert по code
+        import_id_fields = ("code",)  # upsert по code
         fields = (
             "code",
             "kind_code",
-            "width_mm", "height_mm",
-            "label_uk", "label_ru", "label_en",
-            "name_uk", "name_ru", "name_en",
+            "width_mm",
+            "height_mm",
+            "label_uk",
+            "label_ru",
+            "label_en",
+            "name_uk",
+            "name_ru",
+            "name_en",
             "is_vertical",
         )
         skip_unchanged = True
@@ -32,13 +39,15 @@ class SizeResource(resources.ModelResource):
         if k:
             try:
                 row["kind"] = ProductKind.objects.get(code=k).pk
-            except ProductKind.DoesNotExist:
-                raise ValueError(f"ProductKind with code '{k}' not found")
+            except ProductKind.DoesNotExist as exc:
+                raise ValueError(f"ProductKind with code '{k}' not found") from exc
+
 
 class SizeAdmin(ImportExportModelAdmin):
     resource_class = SizeResource
     list_display = ("id", "code", "label_uk", "width_mm", "height_mm", "is_vertical")
     search_fields = ("code", "label_uk", "name_uk", "name_en", "name_ru")
     list_filter = ("is_vertical", "kind")
+
 
 admin.site.register(Size, SizeAdmin)

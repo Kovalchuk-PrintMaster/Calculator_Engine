@@ -46,16 +46,14 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
-
 
 # ============================================================================
 # Базові шляхи проєкту
 # ============================================================================
 
 SCRIPT_FILE = Path(__file__).resolve()
-APP_DIR = SCRIPT_FILE.parents[2]          # .../calculator_engine/app
-PROJECT_ROOT = APP_DIR.parent             # .../calculator_engine
+APP_DIR = SCRIPT_FILE.parents[2]  # .../calculator_engine/app
+PROJECT_ROOT = APP_DIR.parent  # .../calculator_engine
 COMPOSE_FILE = APP_DIR / "infra" / "docker" / "docker-compose.yml"
 ENV_FILE = PROJECT_ROOT / "config" / ".env"
 DEFAULT_BACKUP_DIR = PROJECT_ROOT / "data" / "backups"
@@ -66,6 +64,7 @@ PG_SERVICE = "postgres"
 # ============================================================================
 # Низькорівневі утиліти
 # ============================================================================
+
 
 def dbg(message: str) -> None:
     """Друкує DEBUG-повідомлення."""
@@ -99,7 +98,7 @@ def build_dc() -> list[str]:
 
 
 def run(
-    cmd: List[str],
+    cmd: list[str],
     *,
     capture: bool = False,
     check: bool = True,
@@ -131,7 +130,7 @@ def dc_exec_sh(
     return run(args, capture=capture, check=check, stdin=stdin)
 
 
-def ask(prompt: str, valid: List[str]) -> str:
+def ask(prompt: str, valid: list[str]) -> str:
     """Інтерактивно читає відповідь із обмеженим набором значень."""
     valid_set = {value.lower() for value in valid}
     while True:
@@ -150,7 +149,8 @@ def ask_num(prompt: str, lo: int, hi: int) -> int:
             if lo <= number <= hi:
                 return number
         print(f"Введи число у діапазоні [{lo}..{hi}]")
-        
+
+
 def ask_yes_no(prompt: str, default_yes: bool = True) -> bool:
     """Повертає True/False для yes/no з коректною обробкою Enter."""
     suffix = "[Y/n]" if default_yes else "[y/N]"
@@ -184,7 +184,8 @@ def human_size(size_bytes: int) -> str:
 # Пошук дампів
 # ============================================================================
 
-def list_dumps(search_dir: Path) -> List[Path]:
+
+def list_dumps(search_dir: Path) -> list[Path]:
     """Повертає список *.dump, відсортований за новизною."""
     paths = [Path(p) for p in glob.glob(str(search_dir / "*.dump"))]
     paths.sort(key=lambda path: path.stat().st_mtime, reverse=True)
@@ -220,6 +221,7 @@ def pick_dump_interactive() -> Path:
 # Інспекція дампа
 # ============================================================================
 
+
 def show_toc_first_lines(tmp_inside: str, lines: int = 25) -> None:
     """Показує перші рядки TOC custom dump."""
     print("\n—— Інфо про дамп (TOC, перші 25 рядків) ——")
@@ -229,10 +231,10 @@ def show_toc_first_lines(tmp_inside: str, lines: int = 25) -> None:
         print(line)
 
 
-def parse_tables_and_data_flags(tmp_inside: str) -> Dict[str, bool]:
+def parse_tables_and_data_flags(tmp_inside: str) -> dict[str, bool]:
     """Повертає словник {'public.table': has_data_bool} за TOC."""
     cp = dc_exec_sh(f'pg_restore -l "{tmp_inside}"', capture=True, check=True)
-    result: Dict[str, bool] = {}
+    result: dict[str, bool] = {}
 
     for line in cp.stdout.decode("utf-8", "replace").splitlines():
         if "; " not in line:
@@ -265,7 +267,7 @@ def parse_tables_and_data_flags(tmp_inside: str) -> Dict[str, bool]:
     return {key: value for key, value in result.items() if key.startswith("public.")}
 
 
-def list_dump_tables_print(dump_tables: Dict[str, bool]) -> None:
+def list_dump_tables_print(dump_tables: dict[str, bool]) -> None:
     """Друкує список таблиць, знайдених у dump."""
     print("\n📦 У дампі знайдені таблиці (будуть враховані під час відновлення):")
     print("  {:<34} {:>10}".format("Таблиця", "DATA в dump"))
@@ -288,13 +290,13 @@ def copy_dump_into_container(host_path: Path) -> str:
 # Підрахунок рядків
 # ============================================================================
 
+
 def count_rows_in_db(table: str) -> int:
     """Рахує кількість рядків у таблиці БД."""
     cp = dc_exec_sh(
         (
             'psql -U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" '
-            '-d "$POSTGRES_DB" -Atc '
-            + shlex.quote(f"SELECT count(*) FROM {table}")
+            '-d "$POSTGRES_DB" -Atc ' + shlex.quote(f"SELECT count(*) FROM {table}")
         ),
         capture=True,
         check=False,
@@ -303,7 +305,7 @@ def count_rows_in_db(table: str) -> int:
     return int(output) if output.isdigit() else 0
 
 
-def find_table_data_toc_id(tmp_inside: str, table: str) -> Optional[str]:
+def find_table_data_toc_id(tmp_inside: str, table: str) -> str | None:
     """Повертає TOC id для TABLE DATA public.<table>."""
     table_name = table.split(".", 1)[1]
     cp = dc_exec_sh(f'pg_restore -l "{tmp_inside}"', capture=True, check=True)
@@ -368,18 +370,19 @@ def count_rows_in_dump(tmp_inside: str, table: str) -> int:
 # Допоміжне: формування target args і listfile
 # ============================================================================
 
-def build_target_args(tables: List[str]) -> str:
+
+def build_target_args(tables: list[str]) -> str:
     """Повертає рядок виду '-t public.a -t public.b'."""
     return " ".join(f"-t {shlex.quote(table)}" for table in tables)
 
 
-def build_listfile_for_table_data(tmp_inside: str, tables: List[str]) -> str:
+def build_listfile_for_table_data(tmp_inside: str, tables: list[str]) -> str:
     """Створює listfile тільки з TABLE DATA entries для вказаних таблиць."""
     cp = dc_exec_sh(f'pg_restore -l "{tmp_inside}"', capture=True, check=True)
     lines = cp.stdout.decode("utf-8", "replace").splitlines()
 
     table_names = {table.split(".", 1)[1] for table in tables}
-    picked: List[str] = []
+    picked: list[str] = []
 
     for line in lines:
         if " TABLE DATA " not in line or " public " not in line:
@@ -415,6 +418,7 @@ def build_listfile_for_table_data(tmp_inside: str, tables: List[str]) -> str:
 # Дії відновлення
 # ============================================================================
 
+
 def restore_full_drop_schema(tmp_inside: str) -> None:
     """DROP SCHEMA public і повне відновлення всього dump."""
     print("▶️  Drop & recreate schema public ...")
@@ -432,7 +436,7 @@ def restore_full_drop_schema(tmp_inside: str) -> None:
     )
 
 
-def restore_predata_selected(tmp_inside: str, tables: List[str]) -> None:
+def restore_predata_selected(tmp_inside: str, tables: list[str]) -> None:
     """Відновлює тільки pre-data для вказаних таблиць."""
     if not tables:
         return
@@ -446,7 +450,7 @@ def restore_predata_selected(tmp_inside: str, tables: List[str]) -> None:
     )
 
 
-def truncate_selected(tables: List[str]) -> None:
+def truncate_selected(tables: list[str]) -> None:
     """TRUNCATE вибраних таблиць."""
     if not tables:
         return
@@ -460,7 +464,7 @@ def truncate_selected(tables: List[str]) -> None:
     )
 
 
-def restore_data_selected(tmp_inside: str, tables: List[str]) -> None:
+def restore_data_selected(tmp_inside: str, tables: list[str]) -> None:
     """Відновлює data-only для вказаних таблиць."""
     if not tables:
         return
@@ -472,8 +476,9 @@ def restore_data_selected(tmp_inside: str, tables: List[str]) -> None:
         f'--data-only --disable-triggers --no-owner --no-privileges -L "{listfile}" "{tmp_inside}"',
         check=True,
     )
-    
-def sync_sequences_for_tables(tables: List[str]) -> None:
+
+
+def sync_sequences_for_tables(tables: list[str]) -> None:
     """Синхронізує sequence лише для таблиць, де є колонка id і прив'язана sequence."""
     if not tables:
         return
@@ -494,7 +499,7 @@ def sync_sequences_for_tables(tables: List[str]) -> None:
         """
         cp_has_id = dc_exec_sh(
             'psql -U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" -d "$POSTGRES_DB" '
-            '-Atc ' + shlex.quote(has_id_sql),
+            "-Atc " + shlex.quote(has_id_sql),
             capture=True,
             check=False,
         )
@@ -507,7 +512,7 @@ def sync_sequences_for_tables(tables: List[str]) -> None:
         seq_sql = f"SELECT pg_get_serial_sequence('{schema}.{name}', 'id');"
         cp_seq = dc_exec_sh(
             'psql -U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" -d "$POSTGRES_DB" '
-            '-Atc ' + shlex.quote(seq_sql),
+            "-Atc " + shlex.quote(seq_sql),
             capture=True,
             check=False,
         )
@@ -526,12 +531,13 @@ def sync_sequences_for_tables(tables: List[str]) -> None:
         """
         dc_exec_sh(
             'psql -U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" -d "$POSTGRES_DB" '
-            '-v ON_ERROR_STOP=1 -q -c ' + shlex.quote(sync_sql),
+            "-v ON_ERROR_STOP=1 -q -c " + shlex.quote(sync_sql),
             capture=True,
             check=True,
         )
-        
-def warn_data_only_mode(before: Dict[str, int]) -> None:
+
+
+def warn_data_only_mode(before: dict[str, int]) -> None:
     """Показує розширене попередження перед data-only restore."""
     populated_tables = [table for table, rows in sorted(before.items()) if rows > 0]
 
@@ -555,6 +561,7 @@ def warn_data_only_mode(before: Dict[str, int]) -> None:
 # Головна логіка
 # ============================================================================
 
+
 def main() -> int:
     """Головна точка входу."""
     validate_paths()
@@ -574,8 +581,8 @@ def main() -> int:
 
     cp = dc_exec_sh(
         'psql -U "$POSTGRES_USER" -h localhost -p "$POSTGRES_PORT" -d "$POSTGRES_DB" '
-        '-Atc "SELECT \'public.\' || tablename FROM pg_catalog.pg_tables '
-        'WHERE schemaname=\'public\' ORDER BY 1"',
+        "-Atc \"SELECT 'public.' || tablename FROM pg_catalog.pg_tables "
+        "WHERE schemaname='public' ORDER BY 1\"",
         capture=True,
         check=True,
     )
@@ -586,10 +593,14 @@ def main() -> int:
     if scope == 1:
         missing = sorted(set(db_tables_now) - set(selected_tables))
         if missing:
-            print("\n⚠️  УВАГА: у БД є таблиці, яких немає в дампі — після DROP SCHEMA вони зникнуть:")
+            print(
+                "\n⚠️  УВАГА: у БД є таблиці, яких немає в дампі — після DROP SCHEMA вони зникнуть:"
+            )
             for table in missing:
                 print(f"   • {table}")
-            if not ask_yes_no("Дійсно виконати ПОВНИЙ відкат (ці таблиці буде втрачено)?", default_yes=False):
+            if not ask_yes_no(
+                "Дійсно виконати ПОВНИЙ відкат (ці таблиці буде втрачено)?", default_yes=False
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
 
@@ -613,20 +624,28 @@ def main() -> int:
 
     if scope == 1:
         if mode == 1:
-            if not ask_yes_no("Підтвердити: ПОВНЕ відновлення (DROP SCHEMA public + схема+дані)?", default_yes=False):
+            if not ask_yes_no(
+                "Підтвердити: ПОВНЕ відновлення (DROP SCHEMA public + схема+дані)?",
+                default_yes=False,
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
             restore_full_drop_schema(tmp_inside)
 
         elif mode == 2:
-            if not ask_yes_no("Підтвердити: відновлення ЛИШЕ СХЕМИ (pre-data) для таблиць із дампа?", default_yes=False):
+            if not ask_yes_no(
+                "Підтвердити: відновлення ЛИШЕ СХЕМИ (pre-data) для таблиць із дампа?",
+                default_yes=False,
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
             restore_predata_selected(tmp_inside, selected_tables)
 
         else:
             warn_data_only_mode(before)
-            if not ask_yes_no("Підтвердити: відновлення ЛИШЕ ДАНИХ — селективний?", default_yes=False):
+            if not ask_yes_no(
+                "Підтвердити: відновлення ЛИШЕ ДАНИХ — селективний?", default_yes=False
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
             restore_data_selected(tmp_inside, selected_tables)
@@ -634,7 +653,10 @@ def main() -> int:
 
     else:
         if mode == 1:
-            if not ask_yes_no("Підтвердити: pre-data для вибраних таблиць + TRUNCATE + їхні дані?", default_yes=False):
+            if not ask_yes_no(
+                "Підтвердити: pre-data для вибраних таблиць + TRUNCATE + їхні дані?",
+                default_yes=False,
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
             restore_predata_selected(tmp_inside, selected_tables)
@@ -643,14 +665,18 @@ def main() -> int:
             sync_sequences_for_tables(selected_tables)
 
         elif mode == 2:
-            if not ask_yes_no("Підтвердити: відновлення ЛИШЕ СХЕМИ (pre-data) — селективний?", default_yes=False):
+            if not ask_yes_no(
+                "Підтвердити: відновлення ЛИШЕ СХЕМИ (pre-data) — селективний?", default_yes=False
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
             restore_predata_selected(tmp_inside, selected_tables)
 
         else:
             warn_data_only_mode(before)
-            if not ask_yes_no("Підтвердити: відновлення ЛИШЕ ДАНИХ для таблиць із дампа?", default_yes=False):
+            if not ask_yes_no(
+                "Підтвердити: відновлення ЛИШЕ ДАНИХ для таблиць із дампа?", default_yes=False
+            ):
                 print("Перервано користувачем.")
                 sys.exit(1)
             restore_data_selected(tmp_inside, selected_tables)
@@ -679,7 +705,7 @@ def main() -> int:
         sum_dump += dump_rows
         sum_after += after_rows
 
-        print("{:<34} {:>6} {:>8} {:>6}".format(table, before_rows, dump_rows, after_rows))
+        print(f"{table:<34} {before_rows:>6} {dump_rows:>8} {after_rows:>6}")
 
     print("-" * 60)
     print(f"Таблиць опрацьовано: {len(selected_tables)}, змінених: {changed}")

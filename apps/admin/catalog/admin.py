@@ -2,12 +2,22 @@
 
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
+
+from . import models_catalog
 from .models import (
-    ProductKind, ProductKindName, Material, MaterialAlias, Size,
-    FinishingKind, FinishingOption, PrintColorScheme, ProductKindPrintColor
+    FinishingKind,
+    FinishingOption,
+    Material,
+    MaterialAlias,
+    PrintColorScheme,
+    ProductKind,
+    ProductKindName,
+    ProductKindPrintColor,
+    Size,
 )
 
 # === Ручні, «красиві» адмін-класи для основних таблиць ===
+
 
 @admin.register(ProductKind)
 class ProductKindAdmin(ImportExportModelAdmin):
@@ -75,6 +85,7 @@ class ProductKindPrintColorAdmin(ImportExportModelAdmin):
     list_filter = ("required", "product_kind")
     search_fields = ("product_kind__code", "color_scheme__code")
     readonly_fields = ("id",)
+
 
 # === Додатково: «страховка» — автоматична реєстрація всіх моделей,
 #     які не були зареєстровані вручну вище. Корисно, щоб не забути.

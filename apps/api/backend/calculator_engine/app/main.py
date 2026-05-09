@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Literal
+from typing import Literal
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -12,7 +12,6 @@ from calculator_engine.app.routers.doctor import router as doctor_router
 from calculator_engine.app.routers.materials import router as materials_router
 from calculator_engine.app.routers.meta import router as meta_router
 from calculator_engine.app.routers.price import router as price_router
-
 
 app = FastAPI(
     title="Calculator Engine",

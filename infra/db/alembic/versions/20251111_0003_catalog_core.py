@@ -1,10 +1,11 @@
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "20251111_0003"
 down_revision = "20251109_0001"  # materials уже існує з 0001
 branch_labels = None
 depends_on = None
+
 
 def upgrade():
     # product_kinds
@@ -16,8 +17,18 @@ def upgrade():
         sa.Column("name_uk", sa.String(255), nullable=False),
         sa.Column("name_ru", sa.String(255), nullable=True),
         sa.Column("name_en", sa.String(255), nullable=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.Column("group_code", sa.Text, nullable=True),
         sa.ForeignKeyConstraint(["parent_id"], ["product_kinds.id"], ondelete="SET NULL"),
         sa.UniqueConstraint("code", name="uq_product_kinds_code"),
@@ -32,7 +43,9 @@ def upgrade():
         sa.Column("lang", sa.String(8), nullable=False),
         sa.Column("name", sa.Text, nullable=False),
         sa.ForeignKeyConstraint(["product_kind_id"], ["product_kinds.id"], ondelete="CASCADE"),
-        sa.UniqueConstraint("product_kind_id", "lang", name="product_kind_names_product_kind_id_lang_key"),
+        sa.UniqueConstraint(
+            "product_kind_id", "lang", name="product_kind_names_product_kind_id_lang_key"
+        ),
     )
 
     # sizes
@@ -45,8 +58,18 @@ def upgrade():
         sa.Column("label_uk", sa.String(255), nullable=False),
         sa.Column("label_ru", sa.String(255), nullable=True),
         sa.Column("label_en", sa.String(255), nullable=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.Column("code", sa.Text, nullable=True),
         sa.Column("name_uk", sa.Text, nullable=True),
         sa.Column("name_ru", sa.Text, nullable=True),
@@ -56,9 +79,15 @@ def upgrade():
     )
     op.create_index("ix_sizes_kind", "sizes", ["kind_id"], unique=False)
     op.create_index("ix_sizes_dims", "sizes", ["width_mm", "height_mm"], unique=False)
-    op.create_unique_constraint("uq_sizes_label_dim", "sizes", ["label_uk", "width_mm", "height_mm"])
-    op.execute("CREATE UNIQUE INDEX IF NOT EXISTS ix_sizes_code ON sizes (code) WHERE code IS NOT NULL;")
-    op.execute("ALTER TABLE sizes ADD CONSTRAINT ck_sizes_positive CHECK (width_mm > 0 AND height_mm > 0);")
+    op.create_unique_constraint(
+        "uq_sizes_label_dim", "sizes", ["label_uk", "width_mm", "height_mm"]
+    )
+    op.execute(
+        "CREATE UNIQUE INDEX IF NOT EXISTS ix_sizes_code ON sizes (code) WHERE code IS NOT NULL;"
+    )
+    op.execute(
+        "ALTER TABLE sizes ADD CONSTRAINT ck_sizes_positive CHECK (width_mm > 0 AND height_mm > 0);"
+    )
 
     # finishing_kinds
     op.create_table(
@@ -68,8 +97,18 @@ def upgrade():
         sa.Column("name_uk", sa.String(255), nullable=False),
         sa.Column("name_ru", sa.String(255), nullable=True),
         sa.Column("name_en", sa.String(255), nullable=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
     )
 
     # finishing_options
@@ -81,8 +120,18 @@ def upgrade():
         sa.Column("name_uk", sa.String(255), nullable=False),
         sa.Column("name_ru", sa.String(255), nullable=True),
         sa.Column("name_en", sa.String(255), nullable=True),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.ForeignKeyConstraint(["kind_id"], ["finishing_kinds.id"], ondelete="SET NULL"),
     )
     op.create_index("ix_finishing_options_kind", "finishing_options", ["kind_id"], unique=False)
@@ -105,6 +154,7 @@ def upgrade():
                ('uv',         'УФ-лак',      now(), now())
         ON CONFLICT (code) DO NOTHING;
     """)
+
 
 def downgrade():
     op.drop_table("material_aliases")

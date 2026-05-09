@@ -1,6 +1,7 @@
-from django.core.management.base import BaseCommand
-from django.contrib import admin as dj
 from django.apps import apps
+from django.contrib import admin as dj
+from django.core.management.base import BaseCommand
+
 
 class Command(BaseCommand):
     help = "Діагностика адмінки: які додатки/моделі підхоплені"
@@ -18,10 +19,13 @@ class Command(BaseCommand):
 
         try:
             import catalog
+
             self.stdout.write(f"\n✅ catalog loaded from: {catalog.__file__}")
             import catalog.admin as cadmin
+
             self.stdout.write(f"✅ catalog.admin loaded from: {cadmin.__file__}")
             import catalog.models as cmodels
+
             upper = [x for x in dir(cmodels) if x[:1].isupper()]
             self.stdout.write(f"✅ catalog.models exported symbols: {upper}")
         except Exception as e:

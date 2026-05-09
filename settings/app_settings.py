@@ -77,6 +77,7 @@ def _merge_dicts(base: dict[str, Any], override: dict[str, Any]) -> dict[str, An
 
 def _apply_env_overrides(d: dict[str, Any]) -> dict[str, Any]:
     """Map environment vars to settings fields (highest priority)."""
+
     def _bool(val: str | None, default: bool) -> bool:
         if val is None:
             return default
@@ -94,20 +95,17 @@ def _apply_env_overrides(d: dict[str, Any]) -> dict[str, Any]:
     if "S3_ENDPOINT" in os.environ:
         out["s3_endpoint"] = os.getenv("S3_ENDPOINT", out.get("s3_endpoint", ""))
     if "S3_BUCKET_BACKUPS" in os.environ:
-        out["s3_bucket_backups"] = os.getenv(
-            "S3_BUCKET_BACKUPS",
-            out.get("s3_bucket_backups", "")
-        )
+        out["s3_bucket_backups"] = os.getenv("S3_BUCKET_BACKUPS", out.get("s3_bucket_backups", ""))
     return out
 
 
 def load_settings() -> AppSettings:
     """Load settings with precedence: defaults < base.toml < {ENV}.toml < env vars."""
-    merged = asdict(AppSettings())            # 1) defaults
+    merged = asdict(AppSettings())  # 1) defaults
     merged = _merge_dicts(merged, _load_toml("base.toml"))  # 2) base.toml
     env_name = os.getenv("ENV", merged.get("env", "dev"))
     merged = _merge_dicts(merged, _load_toml(f"{env_name}.toml"))  # 3) env.toml
-    merged = _apply_env_overrides(merged)     # 4) env vars
+    merged = _apply_env_overrides(merged)  # 4) env vars
     return replace(AppSettings(), **merged)
 
 

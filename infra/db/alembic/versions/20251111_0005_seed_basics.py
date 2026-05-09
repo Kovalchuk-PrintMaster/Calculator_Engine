@@ -1,10 +1,10 @@
 from alembic import op
-import sqlalchemy as sa
 
 revision = "20251111_0005"
 down_revision = "20251111_0003"
 branch_labels = None
 depends_on = None
+
 
 def upgrade():
     # --- print_color_schemes ---
@@ -133,12 +133,19 @@ def upgrade():
     ON CONFLICT (code) DO NOTHING;
     """)
 
+
 def downgrade():
     # тільки чистимо введені сид-дані (схеми/зв'язки/довідники залишаємо якщо вже використовуються)
-    op.execute("DELETE FROM product_kind_print_colors WHERE product_kind_id IN (SELECT id FROM product_kinds WHERE code IN ('business_cards','flyers','brochures','stickers','posters'));")
+    op.execute(
+        "DELETE FROM product_kind_print_colors WHERE product_kind_id IN (SELECT id FROM product_kinds WHERE code IN ('business_cards','flyers','brochures','stickers','posters'));"
+    )
     op.execute("DELETE FROM sizes WHERE code IN ('bc_90x50','fly_a6','pos_a3');")
-    op.execute("DELETE FROM product_kind_names WHERE product_kind_id IN (SELECT id FROM product_kinds WHERE code IN ('business_cards','flyers','brochures','stickers','posters'));")
-    op.execute("DELETE FROM product_kinds WHERE code IN ('business_cards','flyers','brochures','stickers','posters');")
+    op.execute(
+        "DELETE FROM product_kind_names WHERE product_kind_id IN (SELECT id FROM product_kinds WHERE code IN ('business_cards','flyers','brochures','stickers','posters'));"
+    )
+    op.execute(
+        "DELETE FROM product_kinds WHERE code IN ('business_cards','flyers','brochures','stickers','posters');"
+    )
     op.execute("DELETE FROM finishing_options WHERE code IN ('lam_gloss','lam_matte','uv_spot');")
     op.execute("DELETE FROM finishing_kinds WHERE code IN ('lamination','uv');")
     op.execute("DELETE FROM materials WHERE code IN ('paper_coated_250','paper_coated_350');")

@@ -1,6 +1,6 @@
 from calculator_engine.app.main import app
-from settings.paths import APP_ROOT, PROJECT_ROOT, SRC_ROOT
 from settings.app_settings import settings
+from settings.paths import APP_ROOT, PROJECT_ROOT, SRC_ROOT
 
 
 def test_imports_and_paths():

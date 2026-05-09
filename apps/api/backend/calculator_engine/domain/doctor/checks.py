@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-
 CheckStatus = Literal["ok", "down"]
 OverallStatus = Literal["ok", "degraded", "down"]
 

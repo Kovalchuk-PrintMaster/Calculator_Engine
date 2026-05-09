@@ -6,8 +6,8 @@
 
 from __future__ import annotations
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 # Ідентифікатори міграції
 revision = "20251109_0001"

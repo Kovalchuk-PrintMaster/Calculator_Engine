@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
+
 from calculator_engine.app.main import app
+
 
 def test_doctor_endpoint() -> None:
     client = TestClient(app)

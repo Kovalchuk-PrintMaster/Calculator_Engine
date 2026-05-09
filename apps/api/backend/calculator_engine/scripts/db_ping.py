@@ -6,10 +6,8 @@
 
 from __future__ import annotations
 
-import sys
-
-from calculator_engine.shared.config import app_config
 from calculator_engine.adapters.db.engine import ping_db
+from calculator_engine.shared.config import app_config
 
 
 def main() -> int:

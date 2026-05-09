@@ -11,10 +11,10 @@
 """
 
 from __future__ import annotations
+
 import contextvars
-from typing import Optional
 
 # Головна контекстна змінна для ідентифікатора запиту
-REQUEST_ID_VAR: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
+REQUEST_ID_VAR: contextvars.ContextVar[str | None] = contextvars.ContextVar(
     "request_id", default=None
 )

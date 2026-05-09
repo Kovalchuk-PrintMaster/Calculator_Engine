@@ -12,18 +12,16 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.pool import QueuePool
 
 from calculator_engine.shared.config import app_config
 
-_engine: Optional[Engine] = None
+_engine: Engine | None = None
 
 
-def make_engine(dsn: Optional[str] = None) -> Engine:
+def make_engine(dsn: str | None = None) -> Engine:
     """Створити новий Engine.
 
     Параметри:
@@ -43,7 +41,7 @@ def make_engine(dsn: Optional[str] = None) -> Engine:
         max_overflow=5,
         pool_pre_ping=True,
         future=True,
-        echo=app_config.debug
+        echo=app_config.debug,
     )
     return engine
 
@@ -57,9 +55,9 @@ def get_engine() -> Engine:
 
 
 def ping_db(
-    engine: Optional[Engine] = None,
+    engine: Engine | None = None,
     *,
-    dsn: Optional[str] = None,
+    dsn: str | None = None,
 ) -> bool:
     """Перевірити доступність БД простою командою SELECT 1.
 

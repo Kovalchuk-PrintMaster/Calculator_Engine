@@ -18,11 +18,12 @@ import logging
 from logging import Handler, LogRecord
 
 from calculator_engine.shared.paths import app_paths
+
 # ЄДИНЕ джерело request_id
 from calculator_engine.shared.request_context import REQUEST_ID_VAR
 
-
 # ---------- Форматери ----------
+
 
 class PlainFormatter(logging.Formatter):
     """Людяний формат для консолі: `[ LEVEL] logger request_id: message`."""
@@ -49,6 +50,7 @@ class CsvFormatter(logging.Formatter):
 
 # ---------- Сервісні утиліти ----------
 
+
 def _attach_request_id_to_all_records() -> None:
     """Інжектити request_id у КОЖЕН LogRecord через LogRecordFactory.
 
@@ -64,7 +66,7 @@ def _attach_request_id_to_all_records() -> None:
             rid = None
         # Інжектимо атрибут незалежно від того, який хендлер/логер спрацював
         if not hasattr(rec, "request_id"):
-            setattr(rec, "request_id", rid)
+            rec.request_id = rid
         return rec
 
     logging.setLogRecordFactory(record_factory)
@@ -72,7 +74,7 @@ def _attach_request_id_to_all_records() -> None:
 
 def _mark_and_add(handler: Handler, root: logging.Logger) -> None:
     """Позначити наш handler і додати до root."""
-    setattr(handler, "_ce_managed", True)
+    handler._ce_managed = True
     root.addHandler(handler)
 
 
@@ -92,6 +94,7 @@ def _make_existing_loggers_inherit_root() -> None:
 
 
 # ---------- Публічна точка входу ----------
+
 
 def setup_logging(*, debug: bool = False, enable_csv: bool = True) -> None:
     """Ініціалізувати логування проєкту.

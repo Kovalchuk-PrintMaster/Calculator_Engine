@@ -1,10 +1,11 @@
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "20251111_0002"
-down_revision = "20251111_0003"   # ВАЖЛИВО: спираємось на 0003, бо там product_kinds
+down_revision = "20251111_0003"  # ВАЖЛИВО: спираємось на 0003, бо там product_kinds
 branch_labels = None
 depends_on = None
+
 
 def upgrade():
     op.create_table(
@@ -16,8 +17,18 @@ def upgrade():
         sa.Column("name_en", sa.Text, nullable=False),
         sa.Column("colors_front", sa.SmallInteger, nullable=False),
         sa.Column("colors_back", sa.SmallInteger, nullable=False),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=False), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=False),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
     )
     op.create_index("ix_print_color_schemes_code", "print_color_schemes", ["code"], unique=True)
 
@@ -26,11 +37,23 @@ def upgrade():
         sa.Column("product_kind_id", sa.Integer, nullable=False),
         sa.Column("color_scheme_id", sa.BigInteger, nullable=False),
         sa.ForeignKeyConstraint(["product_kind_id"], ["product_kinds.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["color_scheme_id"], ["print_color_schemes.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["color_scheme_id"], ["print_color_schemes.id"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("product_kind_id", "color_scheme_id"),
     )
-    op.create_index("ix_product_kind_print_colors_kind", "product_kind_print_colors", ["product_kind_id"], unique=False)
-    op.create_index("ix_product_kind_print_colors_scheme", "product_kind_print_colors", ["color_scheme_id"], unique=False)
+    op.create_index(
+        "ix_product_kind_print_colors_kind",
+        "product_kind_print_colors",
+        ["product_kind_id"],
+        unique=False,
+    )
+    op.create_index(
+        "ix_product_kind_print_colors_scheme",
+        "product_kind_print_colors",
+        ["color_scheme_id"],
+        unique=False,
+    )
 
     # сиди схем
     op.execute("""
@@ -72,6 +95,7 @@ def upgrade():
         SELECT DISTINCT product_kind_id, color_scheme_id FROM pairs
         ON CONFLICT DO NOTHING;
     """)
+
 
 def downgrade():
     op.drop_index("ix_product_kind_print_colors_scheme", table_name="product_kind_print_colors")
