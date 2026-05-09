@@ -1,8 +1,8 @@
-# admin_app/catalog/admin/admin_sizes.py
+# apps/admin/catalog/admin/admin_sizes.py
 from django.contrib import admin
 from import_export import resources, fields
 from import_export.admin import ImportExportModelAdmin
-from . .models import Size, ProductKind
+from ..models import Size, ProductKind
 
 class SizeResource(resources.ModelResource):
     # простий lookup по коду виду (замість FK id) — зручно для XLSX

@@ -1,53 +1,76 @@
-"""
-«Доктор» — прості перевірки стану системи.
-
-Поточна версія:
-    - Перевірка наявності базових конфігів.
-    - Перевірка валідності DSN Postgres (поверхнево).
-Наступні кроки:
-    - Реальні ping-и до Postgres/Redis/S3.
-    - Стан міграцій БД.
-"""
+"""Domain logic for service health/doctor checks."""
 
 from __future__ import annotations
 
-from typing import Dict, List
-import logging
-
-from calculator_engine.config.settings import settings
-
-logger = logging.getLogger("doctor")
+from dataclasses import dataclass
+from typing import Literal
 
 
-def check_config() -> Dict:
-    ok = bool(settings.app_name and settings.postgres_dsn and settings.redis_url)
-    return {
-        "name": "config",
-        "status": "ok" if ok else "fail",
-        "detail": "Основні налаштування присутні" if ok else "Відсутні ключові параметри",
-    }
+CheckStatus = Literal["ok", "down"]
+OverallStatus = Literal["ok", "degraded", "down"]
 
 
-def check_postgres_configured() -> Dict:
-    ok = settings.postgres_dsn.startswith("postgresql")
-    return {
-        "name": "postgres-config",
-        "status": "ok" if ok else "warn",
-        "detail": f"DSN: {settings.postgres_dsn}",
-    }
+@dataclass(frozen=True, slots=True)
+class CheckResult:
+    """Single doctor check result."""
+
+    name: str
+    status: CheckStatus
+    detail: str
 
 
-def run_all_checks() -> Dict:
-    checks: List[Dict] = [
-        check_config(),
-        check_postgres_configured(),
-    ]
-    if any(c["status"] == "fail" for c in checks):
+@dataclass(frozen=True, slots=True)
+class DoctorResult:
+    """Aggregated doctor response."""
+
+    overall: OverallStatus
+    checks: list[CheckResult]
+
+
+def run_all_checks(
+    *,
+    app_name: str,
+    postgres_dsn: str,
+    redis_url: str,
+) -> DoctorResult:
+    """Run all lightweight service checks."""
+
+    checks: list[CheckResult] = []
+
+    config_ok = bool(app_name and postgres_dsn and redis_url)
+    checks.append(
+        CheckResult(
+            name="config",
+            status="ok" if config_ok else "down",
+            detail="Core settings are loaded" if config_ok else "Missing required settings",
+        )
+    )
+
+    postgres_ok = postgres_dsn.startswith("postgresql")
+    checks.append(
+        CheckResult(
+            name="postgres_dsn",
+            status="ok" if postgres_ok else "down",
+            detail=postgres_dsn,
+        )
+    )
+
+    redis_ok = redis_url.startswith("redis://")
+    checks.append(
+        CheckResult(
+            name="redis",
+            status="ok" if redis_ok else "down",
+            detail=redis_url,
+        )
+    )
+
+    failed = sum(1 for item in checks if item.status != "ok")
+
+    if failed == 0:
+        overall: OverallStatus = "ok"
+    elif failed == len(checks):
         overall = "down"
-    elif any(c["status"] == "warn" for c in checks):
-        overall = "degraded"
     else:
-        overall = "ok"
+        overall = "degraded"
 
-    logger.info("Doctor run result", extra={"context": {"overall": overall, "checks": checks}})
-    return {"overall": overall, "checks": checks}
+    return DoctorResult(overall=overall, checks=checks)

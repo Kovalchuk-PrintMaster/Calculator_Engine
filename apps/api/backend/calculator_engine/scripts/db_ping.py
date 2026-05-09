@@ -8,12 +8,12 @@ from __future__ import annotations
 
 import sys
 
-from calculator_engine.config.settings import settings
-from calculator_engine.django_infra.db.engine import ping_db
+from calculator_engine.shared.config import app_config
+from calculator_engine.adapters.db.engine import ping_db
 
 
 def main() -> int:
-    dsn = settings.postgres_dsn
+    dsn = app_config.postgres_dsn
     try:
         ping_db(dsn=dsn)
         print(f"DB OK -> {dsn}")

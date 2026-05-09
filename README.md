@@ -1,196 +1,223 @@
 # Calculator Engine
 
-Движок калькуляції цін для друкарні: бекенд на **Python 3.12** (FastAPI), з чіткою структурою, централізованими конфігами та фокусом на зрозумілості коду навіть через роки.
+Локальний движок калькуляції для друкарні з:
 
-> Мета документа — щоб нова людина змогла легко увійти в проєкт, зрозуміти архітектуру та процеси.
-
----
-
-## 1) Принципи проєкту
-
-- **Чистий корінь репозиторію.** У корені лише найнеобхідніше; службові речі у піддиректоріях (`src/`, `config/`, `requirements/`, тощо).
-- **Докстрінги й коментарі.** Кожен публічний модуль/клас/функція мають докстрінг (Google style), у коментарях пояснюємо **чому**, а не лише **що**.
-- **Централізовані конфіги та шляхи.** Жодних “магічних” шляхів у коді — лише через `config/settings.py` та `config/paths.py`.
-- **Тести з першого дня.** Unit тести для бізнес-логіки, окремо integration/e2e — поступово.
+- Django admin для ведення довідників
+- FastAPI backend для API
+- PostgreSQL + Redis у Docker
+- утилітами для дампів і відновлення БД
+- чистою структурою, де код, конфіги, дані, логи та runtime-state не змішані між собою
 
 ---
 
-## 2) Структура репозиторію (src-layout)
+## 1. Поточна структура проєкту
 
-.
-├─ src/
-│ └─ calculator_engine/
-│ ├─ app/ # FastAPI-програма (роутинг, точки входу)
-│ ├─ config/ # централізовані конфіги/шляхи (settings/paths)
-│ ├─ domain/ # бізнес-логіка (pricing, rules, entities)
-│ ├─ infra/ # інфраструктура (db, cache, s3, email, pdf)
-│ └─ shared/ # утиліти, типи, НЕ секретні константи
-├─ tests/ # unit / integration / e2e тести
-├─ config/ # TOML-конфіги середовищ (base/dev/prod) — пізніше
-├─ requirements/ # списки залежностей (app.txt, dev.txt)
-├─ data/ logs/ tmp/ # службові теки (локальні дані/логи/тимчасове)
-├─ .env.example # приклад змінних середовища (без секретів)
-├─ .env # локальні змінні (не комітити)
-├─ pyproject.toml # інструменти (pytest/ruff/black) і метадані
-└─ README.md
 
-yaml
-Copy code
+calculator_engine/
+├── app/            # код, тести, службові інструменти, docs
+├── config/         # зовнішній env/config
+├── data/           # backups, source files, seeds
+├── logs/           # runtime logs
+├── state/          # postgres, redis
+└── _quarantine/    # тимчасово винесені legacy-файли
 
-**Чому так:** увесь код у `src/…` — імпорти з пакета `calculator_engine`, що зменшує конфлікти та робить проєкт переносимим.
+app/
+├── apps/           # Django admin + API backend
+│   ├── admin/
+│   └── api/
+├── docs/           # внутрішня документація
+├── infra/          # docker, alembic, db infra
+├── requirements/   # requirements/*.txt
+├── settings/       # canonical app settings / paths
+├── source/         # runtime/shared application code
+├── support/        # службові інструменти і тести
+│   ├── common/
+│   ├── db/
+│   └── tests/
+├── Makefile
+├── pyproject.toml
+└── README.md
 
----
+data/
+├── backups/                # дампи БД
+├── seeds/
+│   └── sql/                # SQL seed-файли
+└── source_files/
+    └── catalog/            # Excel / вхідні файли каталогу
 
-## 3) Швидкий старт (WSL/Ubuntu)
+runtime
+env file: config/.env
+postgres state: state/postgres
+redis state: state/redis
+runtime logs: logs/
 
-```bash
-cd ~/calculator_engine
+2. Де що лежить
+Конфіг
+
+Основний env-файл:
+
+config/.env
+Дані
+
+Бекапи БД:
+data/backups
+
+Вхідні Excel/каталожні файли:
+data/source_files/catalog
+
+SQL seed-файли:
+data/seeds/sql
+
+Налаштування застосунку
+
+Canonical app settings живуть тут:
+app/settings/app_settings.py
+app/settings/paths.py
+app/settings/base.toml
+app/settings/dev.toml
+
+Службові інструменти
+DB dump / restore:
+app/support/db
+
+Тести:
+app/support/tests
+
+3. Швидкий старт
+cd /srv/software_development/forprint-project/calculator_engine/app
+
 python3 -m venv .venv_calculator
 source .venv_calculator/bin/activate
 
-# для src-layout
-echo 'PYTHONPATH=src' >> .env
-
-# залежності для розробки (runtime + інструменти)
 pip install -r requirements/dev.txt
+pip install -e .
 
-# перевірка
-pytest -q
-Опційно для VS Code (.vscode/settings.json):
+Підняти локальну інфраструктуру:
 
-json
-Copy code
-{
-  "python.defaultInterpreterPath": ".venv_calculator/bin/python",
-  "python.envFile": "${workspaceFolder}/.env",
-  "python.testing.pytestEnabled": true,
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestArgs": ["-q"],
-  "editor.formatOnSave": true
-}
-4) Конфігурація, секрети та шляхи
-Секрети не зберігаємо в коді. Локально — через .env; продакшн — менеджер секретів.
+make up
+make ps
+4. Django admin
+Застосувати міграції:
 
-Централізовані шляхи: src/calculator_engine/config/paths.py.
+make admin-migrate
 
-Налаштування: src/calculator_engine/config/settings.py (зараз — os.getenv; пізніше — мердж .env + config/*.toml).
+Створити суперкористувача:
 
-При додаванні нового параметра — онови .env.example.
+make admin-superuser
 
-Приклад .env.example:
+Запустити адмінку:
 
-dotenv
-Copy code
-ENV=dev
-DEBUG=true
-POSTGRES_DSN=postgresql+psycopg://user:pass@localhost:5432/app
-REDIS_URL=redis://localhost:6379/0
-S3_ENDPOINT=https://s3.example.com
-S3_BUCKET_BACKUPS=calc-backups
-5) Залежності
-Файли у requirements/:
+make admin-run
 
-app.txt — runtime (бекенд).
+Локальна адреса:
 
-dev.txt — містить -r app.txt + інструменти розробки.
+http://127.0.0.1:8001/admin
 
-Встановлення:
+5. Основні команди Makefile
+Інфраструктура
+make up
+make down
+make ps
+make logs
+Django admin
+make admin-migrate
+make admin-superuser
+make admin-run
+База даних
+make db-shell
+make db-dump-select
+make db-restore
+Тести
+make test
+make test-v
+make test-one T=support/tests/unit/test_sanity.py
+make check
+Python package
+make install-editable
 
-bash
-Copy code
-# розробка
-pip install -r requirements/dev.txt
-# прод/CI
-pip install -r requirements/app.txt
-Поточний намір залежностей runtime (мінімальний скелет):
+6. Робота з дампами
+Селективний дамп
+make db-dump-select
 
-css
-Copy code
-fastapi, uvicorn, SQLAlchemy, pydantic, pydantic-settings,
-psycopg[binary], redis, python-dotenv
-Фактична установка крок за кроком, коли дійдемо до відповідних модулів.
+Скрипт:
 
-6) Тести
-Unit (tests/unit) — чиста логіка без зовнішніх сервісів.
+читає список таблиць із public
+дозволяє вибрати потрібні таблиці
+створює dump у data/backups
+показує коротку звірку:
+було в БД
+чи є DATA в dump
+скільки рядків реально потрапило в dump
+Restore
+make db-restore
 
-Integration (tests/integration) — з Postgres/Redis/S3 (пізніше).
+Підтримуються режими:
 
-E2E (tests/e2e) — сценарії “як користувач” (пізніше).
+повний restore
+лише таблиці з дампа
+schema-only
+data-only
+pre-data + TRUNCATE + data
+
+Для сценаріїв із data-only скрипт синхронізує sequence там, де це потрібно.
+
+7. Тести
+Тести лежать у:
+
+app/support/tests
 
 Запуск:
 
-bash
-Copy code
-pytest -q
-7) Якість коду (ruff + black)
-Налаштування у pyproject.toml:
+make test
 
-ruff: лінтинг (E/F/I/B/UP), auto-fix імпортів.
+Verbose:
 
-black: форматування, 100 символів у рядку.
+make test-v
 
-Ручний запуск:
+Один файл:
 
-bash
-Copy code
-ruff check . && ruff check . --fix
-black .
-8) Коментарі та докстрінги
-Вимоги:
+make test-one T=support/tests/unit/test_sanity.py
 
-Докстрінг у кожному публічному модулі, класі, функції (Google style) + type hints.
+8. Правила структури
+Не змішуємо відповідальності
+app/ — тільки код, тести, tooling і docs
+config/ — зовнішня конфігурація середовища
+data/ — файли, бекапи та seed-артефакти
+logs/ — runtime logs
+state/ — bind-mounted state контейнерів
+Нові шляхи
 
-Коментарі відповідають на питання “чому так”.
+У коді не додаємо “магічні” абсолютні або відносні шляхи.
+Використовуємо тільки:
+app/settings/paths.py
+Нові службові скрипти
 
-Теги:
+Кладемо в:
+app/support/db
+app/support/common
+Нові тести
 
-# NOTE: важливі зауваження;
+Кладемо в:
+app/support/tests
 
-# TODO: запланована робота (посилання/таска);
+9. Поточний технічний статус
 
-# FIXME: відомі проблемні місця.
+На поточному етапі перевірено:
 
-Шаблон функції:
+python apps/admin/manage.py check
+make test
+pip install -e .
 
-python
-Copy code
-def compute_price(qty: int, *, base: float, discount: float = 0.0) -> float:
-    """Calculate final unit price with discount.
+Тобто структура проєкту вже узгоджена з:
 
-    Args:
-        qty: Ordered quantity (>= 1).
-        base: Base unit price before discounts/taxes.
-        discount: Relative discount in [0.0, 1.0].
+Django admin
+pytest
+Makefile
+editable install
+DB dump / restore tooling
 
-    Returns:
-        Final unit price (rounded according to rules).
-
-    Raises:
-        ValueError: On invalid args.
-    """
-    ...
-9) Git-процес (коротко)
-Гілки: feat/..., fix/..., chore/..., docs/....
-
-Коміти: Conventional Commits (напр., feat(pricing): add audience discount).
-
-PR: коротко пояснюємо що/навіщо/як перевірити.
-
-10) Дорожня карта (ближчі кроки)
-Підключити мердж конфігів .env + config/base.toml/dev.toml у settings.py.
-
-Додати FastAPI-залежності й базовий /health ендпоїнт (вже є заглушка).
-
-Скелет domain/pricing з юніт-тестами (pure functions).
-
-Локальні Docker-сервіси для integration-тестів (Postgres/Redis).
-
-11) Ліцензія / авторство
-TBD — визначимо разом (MIT/Apache-2.0/…). Авторські права й контактні дані додамо на етапі підготовки публічної документації.
-
-markdown
-Copy code
-
-## Документація
-Повний набір документів у каталозі [`docs/`](docs/).  
-Рекомендуємо почати з індексу: [`docs/README.md`](docs/README.md).
+10. Legacy / quarantine
+Старі файли та попередні варіанти структури не видаляються одразу.
+Вони тимчасово складаються в:
+_quarantine/
+і лежать там, поки нова схема достатньо довго не відпрацює стабільно.

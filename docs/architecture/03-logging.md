@@ -79,7 +79,7 @@ logger.info("price calculated", extra={"context": {"job_id": 123}})
 
 ## 4) Де лежать журнали і як їх читати
 
-Шляхи централізовано оголошені у `src/calculator_engine/config/paths.py`:
+Шляхи централізовано оголошені у `app/settings/paths.py`:
 
 * **Загальний каталог логів**: `logs/`
 * **Логи автентифікації**: `logs/autentification/` *(написання узгоджене)*
@@ -195,7 +195,7 @@ logger.info("price calculated", extra={"context": {"job_id": 123}})
 * Ініціалізація: `src/calculator_engine/infra/logging/setup.py`
 * Request ID var: `src/calculator_engine/infra/logging/request_id.py`
 * Middleware: `src/calculator_engine/app/middleware.py`
-* Шляхи логів: `src/calculator_engine/config/paths.py`
+* Шляхи логів: `app/settings/paths.py`
 * Makefile команди: `Makefile` (`logs-tail`, `run[-bg]`, `stop`, `ps`)
 
 **Питання/пропозиції** — додавайте issues у репозиторії або доповнюйте цей файл PR-ом.

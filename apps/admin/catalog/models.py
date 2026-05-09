@@ -1,138 +1,49 @@
-from django.db import models
+"""
+Єдина точка входу для моделей каталогу.
 
-# managed = False, бо схему мігрує Alembic
+Автоматично імпортує всі модулі з `models_catalog`
+і експортує всі Django-моделі в namespace `catalog.models`.
 
-class ProductKind(models.Model):
-    id = models.AutoField(primary_key=True)  # integer serial
-    code = models.CharField(max_length=32, unique=True)
-    name_uk = models.CharField(max_length=255)
-    name_ru = models.CharField(max_length=255, null=True, blank=True)
-    name_en = models.CharField(max_length=255, null=True, blank=True)
-    group_code = models.TextField(null=True, blank=True)
+Після цього в admin-модулях можна робити:
+    from ..models import Size, ProductKind
+"""
 
-    class Meta:
-        managed = False
-        db_table = "product_kinds"
+from __future__ import annotations
 
-    def __str__(self):
-        return f"{self.code} — {self.name_uk}"
+import importlib
+import inspect
+import pkgutil
 
+from django.db import models as django_models
 
-class ProductKindName(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    product_kind = models.ForeignKey(ProductKind, on_delete=models.CASCADE, db_column="product_kind_id")
-    lang = models.CharField(max_length=8)
-    name = models.TextField()
+from . import models_catalog as _models_catalog
 
-    class Meta:
-        managed = False
-        db_table = "product_kind_names"
-        unique_together = (("product_kind", "lang"),)
+__all__: list[str] = []
 
 
-class Material(models.Model):
-    id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=64, unique=True)
-    name = models.CharField(max_length=255)
-    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = "materials"
-
-    def __str__(self):
-        return f"{self.code} — {self.name}"
+def _is_django_model(obj: object) -> bool:
+    """Перевіряє, чи об'єкт є класом Django-моделі."""
+    return (
+        inspect.isclass(obj)
+        and issubclass(obj, django_models.Model)
+        and obj is not django_models.Model
+    )
 
 
-class MaterialAlias(models.Model):
-    id = models.AutoField(primary_key=True)
-    material = models.ForeignKey(Material, on_delete=models.CASCADE, db_column="material_id")
-    alias = models.TextField()
+for _info in pkgutil.iter_modules(
+    _models_catalog.__path__,
+    _models_catalog.__name__ + ".",
+):
+    _module = importlib.import_module(_info.name)
 
-    class Meta:
-        managed = False
-        db_table = "material_aliases"
-        unique_together = (("material", "alias"),)
+    for _name, _value in vars(_module).items():
+        if not _is_django_model(_value):
+            continue
 
+        if _name in globals() and globals()[_name] is not _value:
+            raise RuntimeError(
+                f"Duplicate model export detected in catalog.models: {_name}"
+            )
 
-class Size(models.Model):
-    id = models.AutoField(primary_key=True)  # integer serial
-    code = models.TextField(null=True, blank=True, unique=True)
-    name_uk = models.TextField(null=True, blank=True)
-    name_ru = models.TextField(null=True, blank=True)
-    name_en = models.TextField(null=True, blank=True)
-    label_uk = models.CharField(max_length=255)
-    label_ru = models.CharField(max_length=255, null=True, blank=True)
-    label_en = models.CharField(max_length=255, null=True, blank=True)
-    width_mm = models.IntegerField()
-    height_mm = models.IntegerField()
-    is_vertical = models.BooleanField(null=True, blank=True)
-    kind = models.ForeignKey(ProductKind, on_delete=models.SET_NULL, null=True, blank=True, db_column="kind_id")
-
-    class Meta:
-        managed = False
-        db_table = "sizes"
-
-
-class FinishingKind(models.Model):
-    id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=64, unique=True)
-    name_uk = models.CharField(max_length=255)
-    name_ru = models.CharField(max_length=255, null=True, blank=True)
-    name_en = models.CharField(max_length=255, null=True, blank=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = "finishing_kinds"
-
-
-class FinishingOption(models.Model):
-    id = models.AutoField(primary_key=True)
-    kind = models.ForeignKey(FinishingKind, on_delete=models.SET_NULL, null=True, db_column="kind_id")
-    code = models.CharField(max_length=64)
-    name_uk = models.CharField(max_length=255)
-    name_ru = models.CharField(max_length=255, null=True, blank=True)
-    name_en = models.CharField(max_length=255, null=True, blank=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = "finishing_options"
-        unique_together = (("kind", "code"),)
-
-
-class PrintColorScheme(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    code = models.TextField(unique=True)
-    name_uk = models.TextField()
-    name_ru = models.TextField()
-    name_en = models.TextField()
-    colors_front = models.IntegerField()
-    colors_back = models.IntegerField()
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = "print_color_schemes"
-
-    def __str__(self):
-        return f"{self.code} — {self.name_uk}"
-
-
-class ProductKindPrintColor(models.Model):
-    # після 0004 у нас буде surrogate PK + required
-    id = models.BigAutoField(primary_key=True)
-    product_kind = models.ForeignKey(ProductKind, on_delete=models.CASCADE, db_column="product_kind_id")
-    color_scheme = models.ForeignKey(PrintColorScheme, on_delete=models.CASCADE, db_column="color_scheme_id")
-    required = models.BooleanField(default=False)
-
-    class Meta:
-        managed = False
-        db_table = "product_kind_print_colors"
-        unique_together = (("product_kind", "color_scheme"),)
+        globals()[_name] = _value
+        __all__.append(_name)

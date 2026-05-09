@@ -22,8 +22,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from ...domain.pricing.core import QuoteInput, compute_quote
-from ...shared.constants import SUPPORTED_AUDIENCES
+from calculator_engine.domain.pricing.core import QuoteInput, compute_quote
+from calculator_engine.shared.constants import SUPPORTED_AUDIENCES
 
 router = APIRouter(
     prefix="/price",

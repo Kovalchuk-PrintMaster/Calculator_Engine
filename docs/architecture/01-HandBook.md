@@ -61,7 +61,7 @@ src/calculator_engine/
   config/         # paths.py, settings.py, toml конфіги
   shared/         # constants.py, request_context.py, типи
 
-config/           # base.toml, dev.toml, prod.toml, .env.example
+config/           # base.toml, dev.toml, prod.toml, .env
 logs/             # загальний CSV-лог + підкаталоги
   ├─ autentification/   # логи автентифікації (спеціальна назва, як узгоджено)
   └─ data_base/         # логи роботи з БД
@@ -155,7 +155,7 @@ requirements/
 ## Секрети та безпека
 
 * Секретів у гіт не заливаємо.
-* Для локалу: `.env` (у `.gitignore`), приклад — `config/.env.example`.
+* Для локалу: `.env` (у `.gitignore`), приклад — `config/.env`.
 * У продакшн: GitHub Actions Secrets / Vault / KMS.
 * Найменші привілеї для БД/облікових записів; періодична ротація ключів.
 

@@ -14,7 +14,7 @@ CI (GitHub Actions): лінтери (ruff/black), mypy, pytest; локально
 
 Пакетування: pyproject.toml + pip install -e .; імпорт пакета працює.
 
-Шляхи/логи: централізовані константи в config/paths.py, створення службових тек, у т.ч. logs/autentification, logs/data_base.
+Шляхи/логи: централізовані константи в settings/paths.py, створення службових тек, у т.ч. logs/autentification, logs/data_base.
 
 ------------------------------------------------------------------------------------------------
 

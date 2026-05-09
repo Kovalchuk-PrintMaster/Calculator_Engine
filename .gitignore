@@ -1,13 +1,41 @@
+# Python
 __pycache__/
 *.py[cod]
-.venv*/
-.env
+*.pyo
+*.pyd
+
+# Virtual env
+.venv_calculator/
+.venv/
+venv/
+
+# Tool caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-build/
-dist/
-*.egg-info/
+.coverage
+htmlcov/
+
+# Environment
+config/.env
+app/.env
+app/.env.before_move
+
+# Runtime / local state
+logs/
+state/
+_quarantine/
+
+# Database backups and local data
+data/backups/*.dump
+
+# OS / editors
+.DS_Store
+Thumbs.db
 .vscode/
 .idea/
-.ropeproject/
+
+# Build / packaging
+*.egg-info/
+dist/
+build/

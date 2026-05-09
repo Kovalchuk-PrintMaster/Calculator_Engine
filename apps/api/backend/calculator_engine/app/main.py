@@ -1,35 +1,29 @@
-"""App entrypoint (ASGI application) for the Calculator Engine.
-
-Призначення:
-    - Експортує мінімальний FastAPI app (`app`) для Uvicorn/Hypercorn.
-    - Має простий `/health` для балансувальників, моніторингу та CI.
-    - Підключає модульні роутери (/meta, /price, /materials), щоб вхідна
-      точка залишалася малою й читабельною.
-"""
+"""App entrypoint (ASGI application) for the Calculator Engine."""
 
 from __future__ import annotations
 
-from typing import Literal, TypedDict
+from typing_extensions import Literal
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
-from .middleware import setup_middleware
-from .routers.meta import router as meta_router
-from .routers.price import router as price_router
-from .routers.materials import router as materials_router
+from calculator_engine.app.middleware import setup_middleware
+from calculator_engine.app.routers.doctor import router as doctor_router
+from calculator_engine.app.routers.materials import router as materials_router
+from calculator_engine.app.routers.meta import router as meta_router
+from calculator_engine.app.routers.price import router as price_router
 
 
-# Створюємо ASGI-додаток на верхньому рівні (це очікує Uvicorn)
 app = FastAPI(
     title="Calculator Engine",
-    version="0.0.1",   # bump із релізами
-    docs_url="/docs",  # Swagger UI
-    redoc_url="/redoc" # альтернативна документація
+    version="0.0.1",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 
-class HealthResponse(TypedDict):
-    """Схема відповіді для `/health` (легка й стабільна)."""
+class HealthResponse(BaseModel):
+    """Stable response schema for /health."""
 
     status: Literal["ok"]
     service: str
@@ -37,26 +31,20 @@ class HealthResponse(TypedDict):
     docs: str
 
 
-@app.get("/health", summary="Liveness probe", tags=["meta"])
+@app.get("/health", summary="Liveness probe", tags=["meta"], response_model=HealthResponse)
 def health() -> HealthResponse:
-    """Повертає мінімальний, стабільний payload для перевірки живості.
-
-    Чому мінімальний:
-        - Health-чек викликається часто балансувальниками та моніторами.
-        - Максимально швидкий та без побічних ефектів (без викликів у БД/Redis).
-    """
-    return {
-        "status": "ok",
-        "service": "Calculator Engine",
-        "version": app.version or "0.0.1",
-        "docs": "/docs",
-    }
+    """Return a minimal liveness payload."""
+    return HealthResponse(
+        status="ok",
+        service="Calculator Engine",
+        version=app.version or "0.0.1",
+        docs="/docs",
+    )
 
 
-# --- Routers ------------------------------------------------------------------
 app.include_router(meta_router)
+app.include_router(doctor_router)
 app.include_router(price_router)
-app.include_router(materials_router)  # новий базовий роутер: GET /materials
+app.include_router(materials_router)
 
-# --- Middleware ---------------------------------------------------------------
 setup_middleware(app)

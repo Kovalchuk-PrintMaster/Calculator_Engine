@@ -12,7 +12,7 @@ fileConfig(config.config_file_name)
 
 # 2) Підтягуємо metadata з нашого проекту
 from calculator_engine.django_infra.db.base import Base
-from calculator_engine.config.settings import settings
+from settings.app_settings import settings
 
 target_metadata = Base.metadata
 

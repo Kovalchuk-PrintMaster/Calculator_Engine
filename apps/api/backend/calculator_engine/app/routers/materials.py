@@ -16,7 +16,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 
-from calculator_engine.django_infra.db.engine import get_engine
+from calculator_engine.adapters.db.engine import get_engine
 
 router = APIRouter(prefix="/materials", tags=["materials"])
 

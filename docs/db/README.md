@@ -4,7 +4,7 @@
 Описуємо логічну модель БД, таблиці, звʼязки, індекси, політики міграцій.
 
 ## Актуальний DSN
-- Береться з `config/*.toml` або з env (`POSTGRES_DSN`), дефолт — з `config/settings.py`.
+- Береться з `config/*.toml` або з env (`POSTGRES_DSN`), дефолт — з `settings/app_settings.py`.
 
 ## Міграції
 - План: підключити **Alembic** (окремим кроком).

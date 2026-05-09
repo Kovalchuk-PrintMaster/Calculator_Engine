@@ -14,7 +14,15 @@ except Exception:
 # --- Безпека / дебаг
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key-change-me")
 DEBUG = True
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8001",
+    "http://localhost:8001",
+]
+# У dev НЕ використовуємо secure-куки, бо в нас HTTP
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+
 
 # --- Додатки
 INSTALLED_APPS = [
@@ -25,7 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "import_export",
-    "admin_app.catalog.apps.CatalogConfig",
+    "catalog.apps.CatalogConfig",
 
 ]
 IMPORT_EXPORT_USE_TRANSACTIONS = True   # щоб імпорт був атомарним
