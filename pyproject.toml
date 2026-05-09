@@ -52,3 +52,9 @@ disallow_untyped_defs = false
 no_implicit_optional = true
 show_error_codes = true
 pretty = true
+files = [
+    "apps/api/backend/calculator_engine",
+    "apps/admin",
+    "settings",
+    "support",
+]
