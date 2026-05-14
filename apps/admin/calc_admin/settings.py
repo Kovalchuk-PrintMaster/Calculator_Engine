@@ -101,5 +101,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django не має створювати міграції для віддзеркалення таблиць
 MIGRATION_MODULES = {
-    "catalog": None,
+   
 }

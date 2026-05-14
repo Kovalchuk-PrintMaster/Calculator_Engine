@@ -5,7 +5,7 @@ from django.db import models
 class Size(models.Model):
     code = models.CharField(max_length=64, unique=True, db_index=True)
     kind = models.ForeignKey(
-        "catalog.ProductKind",  # FK на сутність довідника видів
+        "catalog.ProductType",  # FK на сутність довідника видів
         null=True,
         blank=True,
         on_delete=models.SET_NULL,

@@ -170,11 +170,25 @@ db-shell: ## Відкрити psql у контейнері postgres
 # Перевірки/утиліти
 # =============================================================================
 
-.PHONY: check-env
+# ------------------- Базова перевірка проєкту -------------------------------------------------------	
+.PHONY: check
+check: ## Базова перевірка проєкту
+	$(PY) apps/admin/manage.py check
+	$(MAKE) test
+
+	.PHONY: check-env
 check-env: ## Показати ключові змінні з .env (без секретів)
 	@echo "POSTGRES_USER=$(PGUSER)"
 	@echo "POSTGRES_DB=$(PGDB)"
 	@echo "POSTGRES_PORT=$(PGPORT)"
+
+.PHONY: install-editable
+install-editable: ## Встановити пакет у editable mode
+	$(PIP) install -e .
+
+.PHONY: tree-app
+tree-app: ## Показати коротке дерево app
+	tree -L 2 $(APP_DIR)
 
 # ------------------- Запустити тести --------------------------------------------------------------
 
@@ -199,17 +213,25 @@ test-one: ## Запустити один тест: make test-one T=support/tests
 ensure-backup-dir: ## Створити теку для бекапів, якщо відсутня
 	@mkdir -p "$(BACKUP_DIR)"; echo "📦 $(BACKUP_DIR) готова"
 
-# ------------------- Базова перевірка проєкту -------------------------------------------------------	
-.PHONY: check
-check: ## Базова перевірка проєкту
-	$(PY) apps/admin/manage.py check
-	$(MAKE) test
 
-.PHONY: install-editable
-install-editable: ## Встановити пакет у editable mode
-	$(PIP) install -e .
 
-.PHONY: tree-app
-tree-app: ## Показати коротке дерево app
-	tree -L 2 $(APP_DIR)
+# --- API / Uvicorn -----------------------------------------------------------
 
+UVICORN_HOST ?= 127.0.0.1
+UVICORN_PORT ?= 8000
+UVICORN_APP  := calculator_engine.app.main:app
+API_PYTHONPATH := "$(APP_DIR)/apps/api/backend:$(APP_DIR):$${PYTHONPATH:-}"
+
+.PHONY: uvicorn uvicorn-reload api-smoke
+
+uvicorn: ## Запустити FastAPI через uvicorn
+	PYTHONPATH=$(API_PYTHONPATH) \
+	$(PY) -m uvicorn $(UVICORN_APP) --host $(UVICORN_HOST) --port $(UVICORN_PORT)
+
+uvicorn-reload: ## Запустити FastAPI через uvicorn з --reload
+	PYTHONPATH=$(API_PYTHONPATH) \
+	$(PY) -m uvicorn $(UVICORN_APP) --host $(UVICORN_HOST) --port $(UVICORN_PORT) --reload
+
+api-smoke: ## Швидка перевірка імпорту FastAPI app
+	PYTHONPATH=$(API_PYTHONPATH) \
+	$(PY) -c "from calculator_engine.app.main import app; print(app.title)"

@@ -16,3 +16,11 @@ for _info in pkgutil.iter_modules(__path__, __name__ + "."):
     importlib.import_module(_info.name)
 
 del importlib, pkgutil, _info
+
+from .admin_material_categories import *
+from .admin_operation_types import *
+from .admin_materials import *
+from .admin_product_types import *
+from .admin_product_templates import *
+from .admin_capabilities import *
+from .admin_pricing import *

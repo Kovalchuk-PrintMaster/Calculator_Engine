@@ -12,6 +12,10 @@ from calculator_engine.app.routers.doctor import router as doctor_router
 from calculator_engine.app.routers.materials import router as materials_router
 from calculator_engine.app.routers.meta import router as meta_router
 from calculator_engine.app.routers.price import router as price_router
+from calculator_engine.app.routers.configuration_preview import (
+     router as configuration_preview_router,)
+from calculator_engine.app.routers.quote_preview import router as quote_preview_router
+
 
 app = FastAPI(
     title="Calculator Engine",
@@ -45,5 +49,7 @@ app.include_router(meta_router)
 app.include_router(doctor_router)
 app.include_router(price_router)
 app.include_router(materials_router)
+app.include_router(configuration_preview_router)
+app.include_router(quote_preview_router)
 
 setup_middleware(app)
