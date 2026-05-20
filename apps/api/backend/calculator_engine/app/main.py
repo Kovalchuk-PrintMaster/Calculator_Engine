@@ -15,7 +15,13 @@ from calculator_engine.app.routers.price import router as price_router
 from calculator_engine.app.routers.configuration_preview import (
      router as configuration_preview_router,)
 from calculator_engine.app.routers.quote_preview import router as quote_preview_router
-
+from calculator_engine.app.routers.brands import router as brands_router
+from calculator_engine.app.routers.intake import router as intake_router
+from calculator_engine.app.routers.reports import router as reports_router
+from calculator_engine.app.routers.configurator_drafts import (
+    router as configurator_drafts_router,
+)
+from calculator_engine.app.routers.catalog_sync import router as catalog_sync_router
 
 app = FastAPI(
     title="Calculator Engine",
@@ -51,5 +57,10 @@ app.include_router(price_router)
 app.include_router(materials_router)
 app.include_router(configuration_preview_router)
 app.include_router(quote_preview_router)
+app.include_router(brands_router)
+app.include_router(intake_router)
+app.include_router(reports_router)
+app.include_router(configurator_drafts_router)
+app.include_router(catalog_sync_router)
 
 setup_middleware(app)

@@ -24,3 +24,5 @@ from .admin_product_types import *
 from .admin_product_templates import *
 from .admin_capabilities import *
 from .admin_pricing import *
+from .admin_ui import *
+from .admin_calculation_jobs import *

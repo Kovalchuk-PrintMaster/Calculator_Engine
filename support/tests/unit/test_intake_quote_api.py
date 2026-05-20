@@ -194,3 +194,66 @@ def test_external_intake_quote_rejects_invalid_quantity_format() -> None:
         },
     )
     assert response.status_code == 422
+    
+def test_external_intake_quote_accepts_schema_v1_mobile_envelope() -> None:
+    response = client.post(
+        "/intake/orders/quote",
+        json={
+            "schema_version": "v1",
+            "client": {
+                "channel": "web",
+                "device": "mobile",
+                "platform": "ios",
+                "app_version": "1.0.0",
+            },
+            "data": {
+                "source": "external",
+                "brand_code": "printmaster_pl",
+                "external_order_id": "SITE-ORDER-MOBILE-1",
+                "external_customer_id": "SITE-CUSTOMER-MOBILE-1",
+                "product_template_code": "business_card_standard",
+                "material_code": "tintoretto_neve_300",
+                "quantity": 100,
+                "selected_operation_codes": ["foil"],
+                "locale": "pl",
+            },
+        },
+    )
+    assert response.status_code == 200
+
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["meta"]["schema_version"] == "v1"
+
+    data = payload["data"]
+    assert data["status"] == "completed"
+    assert data["source"] == "external"
+    assert data["locale"] == "pl"
+    assert data["currency"] == "EUR"
+    assert data["human_report"]["schema_version"] == "v1"
+    assert data["external_report"]["schema_version"] == "v1"
+
+
+def test_external_intake_quote_rejects_unknown_schema_version() -> None:
+    response = client.post(
+        "/intake/orders/quote",
+        json={
+            "schema_version": "v2",
+            "client": {
+                "channel": "mobile",
+                "device": "mobile",
+            },
+            "data": {
+                "source": "external",
+                "product_template_code": "business_card_standard",
+                "material_code": "tintoretto_neve_300",
+                "quantity": 100,
+            },
+        },
+    )
+    assert response.status_code == 400
+
+    payload = response.json()
+    assert payload["status"] == "error"
+    assert payload["meta"]["schema_version"] == "v1"
+    assert payload["error"]["code"] == "intake_normalization_error"

@@ -71,6 +71,9 @@ ENV_REQUIRED_TARGETS := up down down-reset ps logs admin-run admin-migrate admin
 
 $(ENV_REQUIRED_TARGETS): ensure-env
 
+env-load: ## Завантажити змінні з .env в поточну shell-команду
+	@set -a; . $(ENV_FILE); set +a; env | grep '^CALC_' || true
+
 # --- Зберегти структуру проекту у tree.txt --------------------------------------------------------------------
 .PHONY: tree 
 tree: 
@@ -235,3 +238,15 @@ uvicorn-reload: ## Запустити FastAPI через uvicorn з --reload
 api-smoke: ## Швидка перевірка імпорту FastAPI app
 	PYTHONPATH=$(API_PYTHONPATH) \
 	$(PY) -c "from calculator_engine.app.main import app; print(app.title)"
+
+
+# --- Telegram -----------------------------------------------------------
+telegram-check: ## Перевірити Telegram token/chat_id
+	@set -a; . $(ENV_FILE); set +a; \
+	curl -s "https://api.telegram.org/bot$$CALC_TELEGRAM_ALERT_BOT_TOKEN/getMe"
+
+telegram-send-test: ## Надіслати тестове повідомлення в Telegram
+	@set -a; . $(ENV_FILE); set +a; \
+	curl -s -X POST "https://api.telegram.org/bot$$CALC_TELEGRAM_ALERT_BOT_TOKEN/sendMessage" \
+	  -d "chat_id=$$CALC_TELEGRAM_ALERT_CHAT_ID" \
+	  -d "text=Calculator Engine test alert"

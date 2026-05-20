@@ -1,7 +1,7 @@
 from django.db import models
 
 from catalog.utils import get_i18n_value
-
+from .model_sync_metadata import SyncMetadataMixin
 
 class FormFactor(models.TextChoices):
     SHEET = "sheet", "Sheet"
@@ -9,7 +9,7 @@ class FormFactor(models.TextChoices):
     OTHER = "other", "Other"
 
 
-class MaterialCategory(models.Model):
+class MaterialCategory(SyncMetadataMixin, models.Model):
     code = models.CharField(max_length=64, unique=True, db_index=True)
     name_uk = models.CharField(max_length=255)
     name_i18n = models.JSONField(default=dict, blank=True)

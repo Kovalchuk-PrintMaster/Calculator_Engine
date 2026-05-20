@@ -1,9 +1,17 @@
 from django.db import models
 
 from catalog.utils import get_i18n_value
+from .model_sync_metadata import SyncMetadataMixin
+
+LAYOUT_PROFILE_CHOICES = (
+    ("none", "None"),
+    ("n_up", "N-up"),
+    ("step_repeat", "Step & Repeat"),
+    ("manual", "Manual"),
+)
 
 
-class ProductTemplate(models.Model):
+class ProductTemplate(SyncMetadataMixin, models.Model):
     code = models.CharField(max_length=64, unique=True, db_index=True)
     name_uk = models.CharField(max_length=255)
     name_i18n = models.JSONField(default=dict, blank=True)
@@ -26,6 +34,15 @@ class ProductTemplate(models.Model):
 
     route_profile = models.CharField(max_length=64, blank=True, default="")
     pricing_profile = models.CharField(max_length=64, blank=True, default="")
+        
+    layout_profile = models.CharField(
+        max_length=32,
+        choices=LAYOUT_PROFILE_CHOICES,
+        default="none",
+    )
+    allowed_layout_modes_json = models.JSONField(default=list, blank=True)
+    requires_imposition = models.BooleanField(default=False)
+
 
     class Meta:
         db_table = "product_templates"

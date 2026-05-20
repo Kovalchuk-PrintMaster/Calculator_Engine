@@ -3,9 +3,10 @@ from django.db import models
 from catalog.utils import get_i18n_value
 
 from .model_material_categories import FormFactor
+from .model_sync_metadata import SyncMetadataMixin
 
 
-class Material(models.Model):
+class Material(SyncMetadataMixin, models.Model):
     code = models.CharField(max_length=64, unique=True, db_index=True)
     name_uk = models.CharField(max_length=255)
     name_i18n = models.JSONField(default=dict, blank=True)

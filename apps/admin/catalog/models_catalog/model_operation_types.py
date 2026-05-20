@@ -1,6 +1,7 @@
 from django.db import models
 
 from catalog.utils import get_i18n_value
+from .model_sync_metadata import SyncMetadataMixin
 
 
 class OperationGroup(models.TextChoices):
@@ -11,7 +12,7 @@ class OperationGroup(models.TextChoices):
     SERVICE = "service", "Service"
 
 
-class OperationType(models.Model):
+class OperationType(SyncMetadataMixin, models.Model):
     code = models.CharField(max_length=64, unique=True, db_index=True)
     name_uk = models.CharField(max_length=255)
     name_i18n = models.JSONField(default=dict, blank=True)
