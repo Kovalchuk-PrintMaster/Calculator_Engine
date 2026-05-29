@@ -1,0 +1,23 @@
+{
+  "draft_id": "example-draft-001",
+  "status": "draft",
+  "step": "configuration",
+  "brand_code": "printmaster_pl",
+  "product_template_code": "business_card_standard",
+  "material_code": "tintoretto_neve_300",
+  "quantity": 100,
+  "selected_operation_codes": ["foil"],
+  "locale": "pl",
+  "currency": "EUR",
+  "client": {
+    "channel": "web",
+    "device": "desktop",
+    "app_version": null,
+    "platform": null
+  },
+  "state": {
+    "note": "Example quote draft fixture"
+  },
+  "created_at": "2026-05-29T00:00:00+00:00",
+  "updated_at": "2026-05-29T00:00:00+00:00"
+}

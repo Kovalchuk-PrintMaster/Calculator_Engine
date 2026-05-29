@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from dataclasses import asdict
 from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 from calculator_engine.adapters.django_bootstrap import setup_django
@@ -13,9 +14,17 @@ from calculator_engine.app.api_errors import (
     build_api_error_response,
     build_api_meta,
 )
+from calculator_engine.app.schemas.material_consumption import (
+    MaterialConsumptionEstimateSchema,
+)
 from calculator_engine.app.schemas.reports import (
     ExternalQuoteReportSchema,
     HumanQuoteReportSchema,
+)
+from calculator_engine.app.services.material_consumption_projection import (
+    MaterialConsumptionProjectionNotFoundError,
+    MaterialConsumptionProjectionValidationError,
+    build_calculation_job_material_consumption_estimate,
 )
 
 router = APIRouter(
@@ -57,59 +66,123 @@ class CalculationJobReportEnvelope(BaseModel):
     meta: ApiMeta
 
 
+class MaterialConsumptionEstimateEnvelope(BaseModel):
+    status: Literal["ok"]
+    data: MaterialConsumptionEstimateSchema
+    meta: ApiMeta
+
+
+def _material_consumption_estimate_to_dict(result) -> dict:
+    payload = asdict(result)
+    payload["waste_percent"] = str(result.waste_percent)
+    return payload
+
+
+def get_calculation_job_report(*, job_public_id: str):
+    setup_django()
+
+    from catalog.models import CalculationJob
+
+    job = CalculationJob.objects.filter(public_id=UUID(job_public_id)).first()
+    if job is None:
+        raise CalculationJobReportNotFoundError(
+            f"CalculationJob not found: {job_public_id}"
+        )
+
+    return CalculationJobReportResult(
+        job=CalculationJobMetaResponse(
+            job_public_id=str(job.public_id),
+            source=job.source,
+            status=job.status,
+            brand_code=job.brand_code,
+            customer_ref=job.customer_ref,
+            external_order_id=job.external_order_id,
+            external_customer_id=job.external_customer_id,
+            product_template_code=job.product_template_code,
+            material_code=job.material_code,
+            quantity=job.quantity,
+            locale=job.locale,
+            currency=job.currency,
+            subtotal=job.subtotal,
+            total=job.total,
+            error_message=job.error_message,
+            created_at=job.created_at.isoformat(),
+            finished_at=job.finished_at.isoformat() if job.finished_at else None,
+        ),
+        human_report=HumanQuoteReportSchema.model_validate(job.human_report_json),
+        external_report=ExternalQuoteReportSchema.model_validate(job.external_report_json),
+    )
+
+
+class CalculationJobReportNotFoundError(ValueError):
+    pass
+
+
+class CalculationJobReportResult(BaseModel):
+    job: CalculationJobMetaResponse
+    human_report: HumanQuoteReportSchema
+    external_report: ExternalQuoteReportSchema
+
+
 @router.get(
     "/{job_public_id}",
     summary="Get saved calculation job report",
     response_model=CalculationJobReportEnvelope,
 )
-def get_job_report(job_public_id: str) -> CalculationJobReportEnvelope:
-    setup_django()
-
-    from catalog.models import CalculationJob
-
+def get_job_report(job_public_id: str):
     try:
-        UUID(job_public_id)
-    except ValueError:
+        result = get_calculation_job_report(job_public_id=job_public_id)
+    except CalculationJobReportNotFoundError as exc:
         return build_api_error_response(
-            status_code=400,
-            code="invalid_job_public_id",
-            message="Job public id is invalid.",
-            detail=f"Invalid job_public_id: {job_public_id}",
+            status_code=404,
+            code="calculation_job_not_found",
+            message="Calculation job not found.",
+            detail=str(exc),
             retryable=False,
         )
-
-    try:
-        job = CalculationJob.objects.get(public_id=job_public_id)
-    except CalculationJob.DoesNotExist as exc:
-        raise HTTPException(
-            status_code=404,
-            detail=f"CalculationJob not found: {job_public_id}",
-        ) from exc
 
     return CalculationJobReportEnvelope(
         status="ok",
         data=CalculationJobReportData(
-            job=CalculationJobMetaResponse(
-                job_public_id=str(job.public_id),
-                source=job.source,
-                status=job.status,
-                brand_code=job.brand_code,
-                customer_ref=job.customer_ref,
-                external_order_id=job.external_order_id,
-                external_customer_id=job.external_customer_id,
-                product_template_code=job.product_template_code,
-                material_code=job.material_code,
-                quantity=job.quantity,
-                locale=job.locale,
-                currency=job.currency,
-                subtotal=job.subtotal,
-                total=job.total,
-                error_message=job.error_message,
-                created_at=job.created_at.isoformat(),
-                finished_at=job.finished_at.isoformat() if job.finished_at else None,
-            ),
-            human_report=job.human_report_json or {},
-            external_report=job.external_report_json or {},
+            job=result.job,
+            human_report=result.human_report,
+            external_report=result.external_report,
+        ),
+        meta=build_api_meta(),
+    )
+
+
+@router.get(
+    "/{job_public_id}/material-consumption-estimate",
+    response_model=MaterialConsumptionEstimateEnvelope,
+    summary="Get calculation job material consumption estimate",
+)
+def get_job_material_consumption_estimate(job_public_id: str):
+    try:
+        result = build_calculation_job_material_consumption_estimate(
+            job_public_id=job_public_id
+        )
+    except MaterialConsumptionProjectionValidationError as exc:
+        return build_api_error_response(
+            status_code=400,
+            code="material_consumption_estimate_unavailable",
+            message="Material consumption estimate is unavailable.",
+            detail=str(exc),
+            retryable=False,
+        )
+    except MaterialConsumptionProjectionNotFoundError as exc:
+        return build_api_error_response(
+            status_code=404,
+            code="calculation_job_not_found",
+            message="Calculation job not found.",
+            detail=str(exc),
+            retryable=False,
+        )
+
+    return MaterialConsumptionEstimateEnvelope(
+        status="ok",
+        data=MaterialConsumptionEstimateSchema.model_validate(
+            _material_consumption_estimate_to_dict(result)
         ),
         meta=build_api_meta(),
     )

@@ -1,0 +1,22 @@
+{
+  "estimate_id": "example-standalone-estimate-001",
+  "context_type": "standalone",
+  "source_ref": "example:standalone",
+  "quote_ref": null,
+  "draft_ref": null,
+  "calculation_job_ref": null,
+  "material_ref": "tintoretto_neve_300",
+  "material_name_snapshot": "Tintoretto Neve 300",
+  "requested_quantity": 100,
+  "actual_material_quantity": 105,
+  "waste_quantity": 5,
+  "waste_percent": "5.00",
+  "unit": "sheet",
+  "calculation_basis": "example_fixture",
+  "confidence_level": "high",
+  "warnings": [],
+  "metadata": {
+    "note": "Standalone reusable calculator output example"
+  },
+  "created_at": "2026-05-29T00:00:00+00:00"
+}

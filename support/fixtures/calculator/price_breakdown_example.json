@@ -1,0 +1,98 @@
+{
+  "draft_id": "example-draft-001",
+  "step": "quote",
+  "locale": "pl",
+  "currency": "EUR",
+  "product_template_code": "business_card_standard",
+  "material_code": "tintoretto_neve_300",
+  "quantity": 100,
+  "selected_operation_codes": ["foil"],
+  "route": [
+    {
+      "operation_code": "guillotine_cut",
+      "operation_name": "Cięcie gilotynowe",
+      "operation_group": "cutting",
+      "handler_code": "guillotine_cut",
+      "sequence_order": 10,
+      "source": "required"
+    },
+    {
+      "operation_code": "digital_print",
+      "operation_name": "Druk cyfrowy",
+      "operation_group": "print",
+      "handler_code": "digital_print",
+      "sequence_order": 20,
+      "source": "default"
+    },
+    {
+      "operation_code": "foil",
+      "operation_name": "Złocenie folią",
+      "operation_group": "finishing",
+      "handler_code": "foil",
+      "sequence_order": 50,
+      "source": "selected"
+    }
+  ],
+  "lines": [
+    {
+      "code": "material:tintoretto_neve_300",
+      "name": "Tintoretto Neve 300",
+      "category": "material",
+      "quantity": 105,
+      "unit": "sheet",
+      "unit_price": "6.00",
+      "total": "630.00",
+      "meta": {
+        "requested_quantity": 100,
+        "waste_percent": "5.00"
+      }
+    },
+    {
+      "code": "operation:guillotine_cut",
+      "name": "Cięcie gilotynowe",
+      "category": "operation",
+      "quantity": 100,
+      "unit": "item",
+      "unit_price": "0.20",
+      "total": "20.00",
+      "meta": {
+        "setup_price": "0.00",
+        "group": "cutting",
+        "handler_code": "guillotine_cut",
+        "source": "required"
+      }
+    },
+    {
+      "code": "operation:digital_print",
+      "name": "Druk cyfrowy",
+      "category": "operation",
+      "quantity": 100,
+      "unit": "item",
+      "unit_price": "1.50",
+      "total": "150.00",
+      "meta": {
+        "setup_price": "0.00",
+        "group": "print",
+        "handler_code": "digital_print",
+        "source": "default"
+      }
+    },
+    {
+      "code": "operation:foil",
+      "name": "Złocenie folią",
+      "category": "operation",
+      "quantity": 100,
+      "unit": "item",
+      "unit_price": "1.50",
+      "total": "300.00",
+      "meta": {
+        "setup_price": "150.00",
+        "group": "finishing",
+        "handler_code": "foil",
+        "source": "selected"
+      }
+    }
+  ],
+  "subtotal": "1100.00",
+  "total": "1100.00"
+}

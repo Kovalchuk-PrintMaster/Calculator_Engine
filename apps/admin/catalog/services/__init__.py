@@ -27,6 +27,11 @@ from .calculation_processor import CalculationIdempotencyConflictError
 from .catalog_sync import run_catalog_sync
 from .imposition_service import build_imposition_job
 
+from .material_consumption import (
+    build_material_consumption_estimate,
+    material_consumption_estimate_to_dict,
+)
+
 __all__ = [
     "AvailableOperation",
     "MaterialOption",

@@ -56,4 +56,7 @@ def test_get_job_report_after_intake() -> None:
 def test_get_job_report_returns_404_for_missing_job() -> None:
     response = client.get("/reports/jobs/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
-    assert "CalculationJob not found" in response.json()["detail"]
+    payload = response.json()
+    assert payload["status"] == "error"
+    assert payload["error"]["code"] == "calculation_job_not_found"
+    assert "CalculationJob not found" in payload["error"]["detail"]

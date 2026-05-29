@@ -39,6 +39,12 @@ from calculator_engine.app.services.configurator_submit import (
     submit_configurator_draft,
 )
 
+from calculator_engine.app.schemas.material_consumption import MaterialConsumptionEstimateSchema
+from calculator_engine.app.services.material_consumption_projection import (
+    MaterialConsumptionProjectionNotFoundError,
+    MaterialConsumptionProjectionValidationError,
+    build_draft_material_consumption_estimate,
+)
 
 router = APIRouter(
     prefix="/configurator/drafts",
@@ -229,6 +235,11 @@ class ConfiguratorDraftData(BaseModel):
 class ConfiguratorDraftEnvelope(BaseModel):
     status: Literal["ok"]
     data: ConfiguratorDraftData
+    meta: ApiMeta
+
+class MaterialConsumptionEstimateEnvelope(BaseModel):
+    status: Literal["ok"]
+    data: MaterialConsumptionEstimateSchema
     meta: ApiMeta
 
 
@@ -439,6 +450,37 @@ def get_draft_quote_preview(draft_id: str):
             subtotal=result.subtotal,
             total=result.total,
         ),
+        meta=build_api_meta(),
+    )
+
+@router.get(
+    "/{draft_id}/material-consumption-estimate",
+    response_model=MaterialConsumptionEstimateEnvelope,
+    summary="Get configurator draft material consumption estimate",
+)
+def get_draft_material_consumption_estimate(draft_id: str):
+    try:
+        result = build_draft_material_consumption_estimate(draft_id=draft_id)
+    except MaterialConsumptionProjectionValidationError as exc:
+        return build_api_error_response(
+            status_code=400,
+            code="draft_not_ready_for_material_consumption_estimate",
+            message="Draft is not ready for material consumption estimate.",
+            detail=str(exc),
+            retryable=False,
+        )
+    except MaterialConsumptionProjectionNotFoundError as exc:
+        return build_api_error_response(
+            status_code=404,
+            code="draft_not_found",
+            message="Draft not found.",
+            detail=str(exc),
+            retryable=False,
+        )
+
+    return MaterialConsumptionEstimateEnvelope(
+        status="ok",
+        data=MaterialConsumptionEstimateSchema.model_validate(result.__dict__),
         meta=build_api_meta(),
     )
 
