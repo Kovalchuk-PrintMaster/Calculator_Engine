@@ -32,6 +32,12 @@ from .material_consumption import (
     material_consumption_estimate_to_dict,
 )
 
+from .projection_boundaries import (
+    ProjectionBoundaryError,
+    assert_projection_usage,
+    build_projection_boundary_descriptor,
+)
+
 __all__ = [
     "AvailableOperation",
     "MaterialOption",

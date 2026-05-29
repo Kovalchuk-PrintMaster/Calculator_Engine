@@ -146,3 +146,21 @@ It must not become:
 - production integration authority
 
 Future production flow should move through approved integration boundaries.
+
+## Projection safeguard policy
+
+Calculator must treat local catalog entities as non-canonical projections.
+
+Runtime and test safeguards must enforce that these entities are used only as:
+
+- calculation_input
+- projection_cache
+- snapshot
+
+They must never be treated as:
+
+- canonical_truth
+- global_registry
+- library_replacement
+
+This applies especially to Library-sourced records and imported catalog projections.
