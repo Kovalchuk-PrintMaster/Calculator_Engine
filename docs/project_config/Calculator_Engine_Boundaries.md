@@ -12,6 +12,20 @@ Calculator Engine owns:
 - calculation-specific pricing rules
 - calculation report projections
 
+## Calculation result projections
+
+Calculator owns calculation result projections.
+
+These include:
+
+- calculation_execution_snapshot
+- human_report
+- external_report
+- explicit_price_breakdown
+- route_snapshot
+- calculation_output_snapshot
+- calculation_job_result_snapshot
+
 ## Calculator result projections
 
 Calculator-owned result projections include:

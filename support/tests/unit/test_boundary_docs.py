@@ -20,3 +20,8 @@ def test_calculator_engine_boundaries_doc_contains_required_markers() -> None:
 	assert "global_registry" in content
 	assert "library_replacement" in content
 	assert "projection safeguard policy" in content
+	assert "calculation result projections" in content
+	assert "human_report" in content
+	assert "external_report" in content
+	assert "explicit_price_breakdown" in content
+	assert "gateway replacement" in content

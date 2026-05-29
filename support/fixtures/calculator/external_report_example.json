@@ -1,0 +1,33 @@
+{
+  "report_type": "external_quote",
+  "schema_version": "v1",
+  "status": "ok",
+  "calculation_id": "example-job-001",
+  "source": "external",
+  "brand_code": "printmaster_pl",
+  "external_order_id": "SITE-ORDER-2001",
+  "external_customer_id": "SITE-CUSTOMER-777",
+  "product_template_code": "business_card_standard",
+  "material_code": "tintoretto_neve_300",
+  "quantity": 100,
+  "selected_operation_codes": ["foil"],
+  "route_codes": ["guillotine_cut", "digital_print", "foil"],
+  "lines": [
+    {
+      "code": "material:tintoretto_neve_300",
+      "name": "Tintoretto Neve 300",
+      "category": "material",
+      "quantity": 105,
+      "unit": "sheet",
+      "unit_price": "6.00",
+      "total": "630.00",
+      "meta": {
+        "requested_quantity": 100,
+        "waste_percent": "5.00"
+      }
+    }
+  ],
+  "subtotal": "1100.00",
+  "total": "1100.00",
+  "currency": "EUR"
+}
