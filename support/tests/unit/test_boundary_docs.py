@@ -25,3 +25,16 @@ def test_calculator_engine_boundaries_doc_contains_required_markers() -> None:
 	assert "external_report" in content
 	assert "explicit_price_breakdown" in content
 	assert "gateway replacement" in content
+	assert "scenario" in content or "projection safeguard policy" in content
+
+
+def test_calculation_scenario_coverage_doc_exists_and_has_required_markers() -> None:
+    path = Path("docs/architecture/calculation_scenario_coverage.md")
+    assert path.exists(), "Scenario coverage doc is missing."
+
+    content = path.read_text(encoding="utf-8").lower()
+
+    assert "scenario coverage" in content
+    assert "local catalog" in content
+    assert "non-canonical" in content
+    assert "preview/submit/report parity" in content

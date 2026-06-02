@@ -1,0 +1,56 @@
+[
+  {
+    "code": "bc_std_base_100",
+    "brand_code": "printmaster_pl",
+    "product_template_code": "business_card_standard",
+    "material_code": "tintoretto_neve_300",
+    "quantity": 100,
+    "selected_operation_codes": [],
+    "expected_currency": "EUR",
+    "expected_total": "800.00",
+    "expected_route_codes": ["guillotine_cut", "digital_print"],
+    "expected_material_ref": "tintoretto_neve_300",
+    "expected_actual_material_quantity": 105
+  },
+  {
+    "code": "bc_std_foil_100",
+    "brand_code": "printmaster_pl",
+    "product_template_code": "business_card_standard",
+    "material_code": "tintoretto_neve_300",
+    "quantity": 100,
+    "selected_operation_codes": ["foil"],
+    "expected_currency": "EUR",
+    "expected_total": "1100.00",
+    "expected_route_codes": ["guillotine_cut", "digital_print", "foil"],
+    "expected_material_ref": "tintoretto_neve_300",
+    "expected_actual_material_quantity": 105
+  },
+  {
+    "code": "bc_std_base_250",
+    "brand_code": "printmaster_pl",
+    "product_template_code": "business_card_standard",
+    "material_code": "tintoretto_neve_300",
+    "quantity": 250,
+    "selected_operation_codes": [],
+    "expected_currency": "EUR",
+    "expected_route_codes": ["guillotine_cut", "digital_print"],
+    "expected_material_ref": "tintoretto_neve_300",
+    "min_actual_material_quantity": 250,
+    "compare_to": "bc_std_base_100",
+    "relation": "higher_total"
+  },
+  {
+    "code": "bc_std_foil_250",
+    "brand_code": "printmaster_pl",
+    "product_template_code": "business_card_standard",
+    "material_code": "tintoretto_neve_300",
+    "quantity": 250,
+    "selected_operation_codes": ["foil"],
+    "expected_currency": "EUR",
+    "expected_route_codes": ["guillotine_cut", "digital_print", "foil"],
+    "expected_material_ref": "tintoretto_neve_300",
+    "min_actual_material_quantity": 250,
+    "compare_to": "bc_std_base_250",
+    "relation": "higher_total"
+  }
+]
