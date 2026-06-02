@@ -4,6 +4,9 @@ from dataclasses import dataclass
 from decimal import Decimal
 
 from calculator_engine.adapters.django_bootstrap import setup_django
+from calculator_engine.app.services.configurator_context import (
+    build_configurator_draft_quote_preview,
+)
 from calculator_engine.app.services.configurator_flow import (
     resolve_configurator_draft_flow_state,
 )
@@ -53,6 +56,90 @@ class ConfiguratorDraftSubmitResult:
     external_report: dict
 
 
+def _as_decimal(value) -> Decimal:
+    return Decimal(str(value))
+
+
+def _preview_route_codes(preview) -> list[str]:
+    return [step.operation_code for step in preview.route]
+
+
+def _human_report_route_codes(report: dict) -> list[str]:
+    return [str(item.get("operation_code", "")) for item in list(report.get("route") or [])]
+
+
+def _external_report_route_codes(report: dict) -> list[str]:
+    return [str(item) for item in list(report.get("route_codes") or [])]
+
+
+def _validate_submit_matches_preview(*, preview, result) -> None:
+    human_report = dict(result.human_report or {})
+    external_report = dict(result.external_report or {})
+
+    if str(preview.currency) != str(result.currency):
+        raise ConfiguratorSubmitValidationError(
+            "Submit result currency does not match quote preview."
+        )
+
+    if _as_decimal(preview.subtotal) != _as_decimal(result.subtotal):
+        raise ConfiguratorSubmitValidationError(
+            "Submit subtotal does not match quote preview."
+        )
+
+    if _as_decimal(preview.total) != _as_decimal(result.total):
+        raise ConfiguratorSubmitValidationError(
+            "Submit total does not match quote preview."
+        )
+
+    if str(preview.material_code) != str(human_report.get("material_code", "")):
+        raise ConfiguratorSubmitValidationError(
+            "Human report material_code does not match quote preview."
+        )
+
+    if str(preview.material_code) != str(external_report.get("material_code", "")):
+        raise ConfiguratorSubmitValidationError(
+            "External report material_code does not match quote preview."
+        )
+
+    if int(preview.quantity) != int(human_report.get("quantity", 0)):
+        raise ConfiguratorSubmitValidationError(
+            "Human report quantity does not match quote preview."
+        )
+
+    if int(preview.quantity) != int(external_report.get("quantity", 0)):
+        raise ConfiguratorSubmitValidationError(
+            "External report quantity does not match quote preview."
+        )
+
+    preview_route_codes = _preview_route_codes(preview)
+    human_route_codes = _human_report_route_codes(human_report)
+    external_route_codes = _external_report_route_codes(external_report)
+
+    if preview_route_codes != human_route_codes:
+        raise ConfiguratorSubmitValidationError(
+            "Human report route does not match quote preview."
+        )
+
+    if preview_route_codes != external_route_codes:
+        raise ConfiguratorSubmitValidationError(
+            "External report route does not match quote preview."
+        )
+
+    preview_selected_ops = list(preview.selected_operation_codes or [])
+    human_selected_ops = list(human_report.get("selected_operation_codes") or [])
+    external_selected_ops = list(external_report.get("selected_operation_codes") or [])
+
+    if preview_selected_ops != human_selected_ops:
+        raise ConfiguratorSubmitValidationError(
+            "Human report selected operations do not match quote preview."
+        )
+
+    if preview_selected_ops != external_selected_ops:
+        raise ConfiguratorSubmitValidationError(
+            "External report selected operations do not match quote preview."
+        )
+
+
 def submit_configurator_draft(
     *,
     draft_id: str,
@@ -89,6 +176,8 @@ def submit_configurator_draft(
             f"Draft is not ready for submit. Missing fields: {', '.join(flow.missing_fields)}"
         )
 
+    preview = build_configurator_draft_quote_preview(draft_id=draft_id)
+
     raw_payload = {
         "source": source,
         "brand_code": draft.brand_code,
@@ -119,9 +208,14 @@ def submit_configurator_draft(
     ) as exc:
         raise ConfiguratorSubmitValidationError(str(exc)) from exc
 
+    _validate_submit_matches_preview(preview=preview, result=result)
+
     state = dict(draft.state_json or {})
     state["last_submitted_job_public_id"] = result.job_public_id
     state["last_submitted_at"] = timezone.now().isoformat()
+    state["last_preview_total"] = str(preview.total)
+    state["last_preview_currency"] = str(preview.currency)
+    state["last_preview_route_codes"] = _preview_route_codes(preview)
 
     draft.status = "submitted"
     draft.state_json = state
