@@ -75,7 +75,8 @@ def test_patch_configurator_draft_updates_fields() -> None:
     assert data["material_code"] == "tintoretto_neve_300"
     assert data["quantity"] == 100
     assert data["selected_operation_codes"] == ["foil"]
-    assert data["step"] == "configuration"
+    assert data["status"] == "quote_ready"
+    assert data["step"] == "quote"
 
 
 def test_create_configurator_draft_rejects_unknown_brand() -> None:

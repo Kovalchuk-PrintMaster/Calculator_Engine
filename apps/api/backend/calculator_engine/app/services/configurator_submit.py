@@ -4,6 +4,9 @@ from dataclasses import dataclass
 from decimal import Decimal
 
 from calculator_engine.adapters.django_bootstrap import setup_django
+from calculator_engine.app.services.configurator_flow import (
+    resolve_configurator_draft_flow_state,
+)
 from calculator_engine.app.services.intake_application import (
     IntakeApplicationBrandError,
     IntakeApplicationIdempotencyConflictError,
@@ -50,17 +53,6 @@ class ConfiguratorDraftSubmitResult:
     external_report: dict
 
 
-def _missing_fields(*, template_code: str, material_code: str, quantity: int | None) -> list[str]:
-    missing: list[str] = []
-    if not template_code:
-        missing.append("product_template_code")
-    if template_code and not material_code:
-        missing.append("material_code")
-    if template_code and material_code and not quantity:
-        missing.append("quantity")
-    return missing
-
-
 def submit_configurator_draft(
     *,
     draft_id: str,
@@ -85,14 +77,16 @@ def submit_configurator_draft(
     material_code = draft.material_code or ""
     quantity = draft.quantity
 
-    missing = _missing_fields(
-        template_code=template_code,
+    flow = resolve_configurator_draft_flow_state(
+        current_status=draft.status,
+        product_template_code=template_code,
         material_code=material_code,
         quantity=quantity,
     )
-    if missing:
+
+    if not flow.can_submit:
         raise ConfiguratorSubmitValidationError(
-            f"Draft is not ready for submit. Missing fields: {', '.join(missing)}"
+            f"Draft is not ready for submit. Missing fields: {', '.join(flow.missing_fields)}"
         )
 
     raw_payload = {
@@ -129,7 +123,7 @@ def submit_configurator_draft(
     state["last_submitted_job_public_id"] = result.job_public_id
     state["last_submitted_at"] = timezone.now().isoformat()
 
-    draft.status = ConfiguratorDraft.Status.SUBMITTED
+    draft.status = "submitted"
     draft.state_json = state
     draft.save(update_fields=["status", "state_json", "updated_at"])
 

@@ -19,7 +19,7 @@ class ConfiguratorDraft(models.Model):
     )
 
     status = models.CharField(
-        max_length=16,
+        max_length=32,
         choices=Status.choices,
         default=Status.DRAFT,
         db_index=True,

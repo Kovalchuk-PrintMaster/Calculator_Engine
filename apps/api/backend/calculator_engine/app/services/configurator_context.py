@@ -5,6 +5,9 @@ from decimal import Decimal
 from typing import Any
 
 from calculator_engine.adapters.django_bootstrap import setup_django
+from calculator_engine.app.services.configurator_flow import (
+    resolve_configurator_draft_flow_state,
+)
 
 
 class ConfiguratorContextError(ValueError):
@@ -104,17 +107,6 @@ def _serialize_material_options(items: list[Any]) -> list[DraftMaterialOption]:
     return result
 
 
-def _missing_fields(*, template_code: str, material_code: str, quantity: int | None) -> list[str]:
-    missing: list[str] = []
-    if not template_code:
-        missing.append("product_template_code")
-    if template_code and not material_code:
-        missing.append("material_code")
-    if template_code and material_code and not quantity:
-        missing.append("quantity")
-    return missing
-
-
 def build_configurator_draft_context(*, draft_id: str) -> DraftContextResult:
     setup_django()
 
@@ -133,10 +125,17 @@ def build_configurator_draft_context(*, draft_id: str) -> DraftContextResult:
     quantity = draft.quantity
     selected_operation_codes = list(draft.selected_operation_codes_json or [])
 
+    flow = resolve_configurator_draft_flow_state(
+        current_status=draft.status,
+        product_template_code=template_code,
+        material_code=material_code,
+        quantity=quantity,
+    )
+
     if not template_code:
         return DraftContextResult(
             draft_id=str(draft.public_id),
-            step="template",
+            step=flow.step,
             brand_code=draft.brand_code,
             locale=draft.locale,
             currency=draft.currency,
@@ -147,9 +146,9 @@ def build_configurator_draft_context(*, draft_id: str) -> DraftContextResult:
             available_operation_codes=[],
             default_route_codes=[],
             material_options=[],
-            missing_fields=["product_template_code"],
-            can_select_material=False,
-            can_quote=False,
+            missing_fields=flow.missing_fields,
+            can_select_material=flow.can_select_material,
+            can_quote=flow.can_submit,
         )
 
     template = ProductTemplate.objects.filter(code=template_code, active=True).first()
@@ -172,19 +171,9 @@ def build_configurator_draft_context(*, draft_id: str) -> DraftContextResult:
         locale=draft.locale,
     )
 
-    missing = _missing_fields(
-        template_code=template_code,
-        material_code=material_code,
-        quantity=quantity,
-    )
-
-    step = "configuration"
-    if not material_code:
-        step = "material"
-
     return DraftContextResult(
         draft_id=str(draft.public_id),
-        step=step,
+        step=flow.step,
         brand_code=draft.brand_code,
         locale=draft.locale,
         currency=draft.currency,
@@ -195,9 +184,9 @@ def build_configurator_draft_context(*, draft_id: str) -> DraftContextResult:
         available_operation_codes=list(preview.available_operation_codes),
         default_route_codes=list(preview.default_route_codes),
         material_options=_serialize_material_options(list(preview.material_options)),
-        missing_fields=missing,
-        can_select_material=True,
-        can_quote=len(missing) == 0,
+        missing_fields=flow.missing_fields,
+        can_select_material=flow.can_select_material,
+        can_quote=flow.can_submit,
     )
 
 
@@ -218,14 +207,16 @@ def build_configurator_draft_quote_preview(*, draft_id: str) -> DraftQuotePrevie
     material_code = draft.material_code or ""
     quantity = draft.quantity
 
-    missing = _missing_fields(
-        template_code=template_code,
+    flow = resolve_configurator_draft_flow_state(
+        current_status=draft.status,
+        product_template_code=template_code,
         material_code=material_code,
         quantity=quantity,
     )
-    if missing:
+
+    if not flow.can_preview_quote:
         raise ConfiguratorContextValidationError(
-            f"Draft is not ready for quote preview. Missing fields: {', '.join(missing)}"
+            f"Draft is not ready for quote preview. Missing fields: {', '.join(flow.missing_fields)}"
         )
 
     template = ProductTemplate.objects.filter(code=template_code, active=True).first()
@@ -250,7 +241,7 @@ def build_configurator_draft_quote_preview(*, draft_id: str) -> DraftQuotePrevie
 
     return DraftQuotePreviewResult(
         draft_id=str(draft.public_id),
-        step="quote",
+        step=flow.step,
         locale=draft.locale,
         currency=draft.currency,
         product_template_code=template_code,

@@ -5,6 +5,10 @@ from typing import Any
 from uuid import UUID
 
 from calculator_engine.adapters.django_bootstrap import setup_django
+from calculator_engine.app.services.configurator_flow import (
+    resolve_configurator_draft_flow_state,
+)
+
 
 class ConfiguratorDraftError(ValueError):
     """Base configurator draft error."""
@@ -40,16 +44,13 @@ class ConfiguratorDraftResult:
     updated_at: str
 
 
-def _compute_step(*, product_template_code: str, material_code: str) -> str:
-    if not product_template_code:
-        return "template"
-    if not material_code:
-        return "material"
-    return "configuration"
-
-
 def _normalize_code(value: Any) -> str:
     return str(value or "").strip().lower()
+
+
+def _normalize_optional_text(value: str | None) -> str | None:
+    normalized = str(value or "").strip()
+    return normalized or None
 
 
 def _normalize_ops(value: Any) -> list[str]:
@@ -71,14 +72,18 @@ def _normalize_ops(value: Any) -> list[str]:
     return result
 
 
-def _serialize_draft(draft: Any) -> ConfiguratorDraftResult:
+def _to_result(draft: Any) -> ConfiguratorDraftResult:
+    flow = resolve_configurator_draft_flow_state(
+        current_status=draft.status,
+        product_template_code=draft.product_template_code,
+        material_code=draft.material_code,
+        quantity=draft.quantity,
+    )
+
     return ConfiguratorDraftResult(
         draft_id=str(draft.public_id),
-        status=draft.status,
-        step=_compute_step(
-            product_template_code=draft.product_template_code,
-            material_code=draft.material_code,
-        ),
+        status=flow.status,
+        step=flow.step,
         brand_code=draft.brand_code,
         product_template_code=draft.product_template_code or None,
         material_code=draft.material_code or None,
@@ -109,36 +114,43 @@ def create_configurator_draft(
     from catalog.services import resolve_brand_runtime_defaults
 
     normalized_brand_code = _normalize_code(brand_code)
-    client_meta = dict(client_meta or {})
-    state = dict(state or {})
+    normalized_locale = _normalize_optional_text(locale)
+    normalized_currency = _normalize_optional_text(currency)
 
-    if normalized_brand_code:
-        try:
-            resolved = resolve_brand_runtime_defaults(
-                brand_code=normalized_brand_code,
-                explicit_locale=locale,
-                explicit_currency=currency,
-                fallback_locale=request_context_locale,
-                fallback_currency=request_context_currency,
-            )
-            effective_locale = resolved.locale
-            effective_currency = resolved.currency
-            resolved_brand_code = resolved.brand_code
-        except ValueError as exc:
-            raise ConfiguratorDraftBrandError(str(exc)) from exc
-    else:
-        effective_locale = str(locale or request_context_locale).strip().lower()
-        effective_currency = str(currency or request_context_currency).strip().upper()
-        resolved_brand_code = ""
+    try:
+        runtime = resolve_brand_runtime_defaults(
+            brand_code=normalized_brand_code,
+            explicit_locale=normalized_locale,
+            explicit_currency=normalized_currency,
+            fallback_locale=request_context_locale,
+            fallback_currency=request_context_currency,
+        )
+    except Exception as exc:
+        raise ConfiguratorDraftBrandError(str(exc)) from exc
 
     draft = ConfiguratorDraft.objects.create(
-        brand_code=resolved_brand_code,
-        locale=effective_locale,
-        currency=effective_currency,
-        client_meta_json=client_meta,
-        state_json=state,
+        brand_code=runtime.brand_code,
+        status="draft",
+        product_template_code="",
+        material_code="",
+        quantity=None,
+        selected_operation_codes_json=[],
+        locale=runtime.locale,
+        currency=runtime.currency,
+        client_meta_json=dict(client_meta or {}),
+        state_json=dict(state or {}),
     )
-    return _serialize_draft(draft)
+
+    flow = resolve_configurator_draft_flow_state(
+        current_status=draft.status,
+        product_template_code=draft.product_template_code,
+        material_code=draft.material_code,
+        quantity=draft.quantity,
+    )
+    draft.status = flow.status
+    draft.save(update_fields=["status", "updated_at"])
+
+    return _to_result(draft)
 
 
 def get_configurator_draft(*, draft_id: str) -> ConfiguratorDraftResult:
@@ -160,7 +172,7 @@ def get_configurator_draft(*, draft_id: str) -> ConfiguratorDraftResult:
             f"ConfiguratorDraft not found: {draft_id}"
         ) from exc
 
-    return _serialize_draft(draft)
+    return _to_result(draft)
 
 
 def update_configurator_draft(
@@ -191,14 +203,16 @@ def update_configurator_draft(
         ) from exc
 
     if product_template_code is not None:
-        draft.product_template_code = _normalize_code(product_template_code)
+        draft.product_template_code = _normalize_code(product_template_code) or ""
 
     if material_code is not None:
-        draft.material_code = _normalize_code(material_code)
+        draft.material_code = _normalize_code(material_code) or ""
 
     if quantity is not None:
         if quantity <= 0:
-            raise ConfiguratorDraftValidationError("Quantity must be greater than zero.")
+            raise ConfiguratorDraftValidationError(
+                "Quantity must be greater than zero."
+            )
         draft.quantity = int(quantity)
 
     if selected_operation_codes is not None:
@@ -209,6 +223,14 @@ def update_configurator_draft(
             raise ConfiguratorDraftValidationError("state must be an object.")
         draft.state_json = dict(state)
 
+    flow = resolve_configurator_draft_flow_state(
+        current_status=draft.status,
+        product_template_code=draft.product_template_code,
+        material_code=draft.material_code,
+        quantity=draft.quantity,
+    )
+    draft.status = flow.status
+
     draft.save(
         update_fields=[
             "product_template_code",
@@ -216,7 +238,9 @@ def update_configurator_draft(
             "quantity",
             "selected_operation_codes_json",
             "state_json",
+            "status",
             "updated_at",
         ]
     )
-    return _serialize_draft(draft)
+
+    return _to_result(draft)

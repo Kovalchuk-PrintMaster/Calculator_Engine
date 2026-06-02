@@ -6,6 +6,8 @@ from fastapi import APIRouter, Body, Depends
 from pydantic import BaseModel, Field
 from decimal import Decimal
 
+from dataclasses import asdict
+
 from calculator_engine.app.api_errors import (
     ApiMeta,
     build_api_error_response,
@@ -480,7 +482,9 @@ def get_draft_material_consumption_estimate(draft_id: str):
 
     return MaterialConsumptionEstimateEnvelope(
         status="ok",
-        data=MaterialConsumptionEstimateSchema.model_validate(result.__dict__),
+        data=MaterialConsumptionEstimateSchema.model_validate(
+            _material_consumption_estimate_to_dict(result)
+        ),
         meta=build_api_meta(),
     )
 
@@ -580,3 +584,8 @@ def patch_draft(
         )
 
     return _to_envelope(result)
+
+def _material_consumption_estimate_to_dict(result) -> dict:
+    payload = asdict(result)
+    payload["waste_percent"] = str(result.waste_percent)
+    return payload
