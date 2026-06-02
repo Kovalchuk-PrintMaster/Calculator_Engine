@@ -7,12 +7,14 @@ Calculator Engine is active.
 Phase A — Calculator UX / Application Flow Hardening.
 
 ## 3. Last completed step
-Local catalog calculation scenario coverage was completed and pushed.
+Blueprint pull and self-check bootstrap is being added.
 
 ## 4. Latest checks
 - Django check: ok
-- Tests: ok (`86 passed`)
-- Check-report: deferred / not configured yet
+- Tests: ok (`91 passed`)
+- Blueprint self-check: ok
+- Blueprint pull: ok (already up to date)
+- Check-report: deferred / pending local runner definition
 
 ## 5. Current capabilities
 - external quote intake
@@ -24,17 +26,21 @@ Local catalog calculation scenario coverage was completed and pushed.
 - material consumption estimate for draft and calculation job
 - local scenario matrix for calculation hardening
 - catalog sync projection safeguards
+- blueprint pull via Makefile
+- blueprint self-check readiness
+- global policy / standards / directives availability check
 
 ## 6. Current boundaries
 Calculator Engine remains calculation-focused.
 
-It currently treats catalog-like local data as:
-- projection
-- cache
-- scenario input
-- calculation snapshot
+It may now:
+- pull Blueprint updates
+- check Blueprint global policy presence
+- check Blueprint standards presence
+- check global directives index presence
+- check calculator-specific directives index presence
 
-It does not act as canonical source of truth.
+It still does not perform automatic directive execution or structural auto-refactoring.
 
 ## 7. What the module must not own
 Calculator Engine must not own:
@@ -47,14 +53,14 @@ Calculator Engine must not own:
 - prepress lifecycle
 
 ## 8. Open questions
-- Should the next macro block prioritize contract stabilization or trusted handoff refinement?
-- When should Library-driven projections replace local fixture-first scenario coverage as the primary source for scenario hardening?
-- Should check-report validation be added now or deferred until a repo-level runner exists?
+- Should check-report validation for coordination files be added now?
+- Should blueprint-check later parse directive contents, or remain a readiness check for now?
+- After this step, should the next macro block remain calculator-facing contract stabilization?
 
 ## 9. Recommended next step
-Apply coordination through Git, confirm alignment with Blueprint, then continue Phase A with calculator-facing contract stabilization.
+Complete Blueprint self-check bootstrap, update coordination report, then continue Phase A with calculator-facing contract stabilization.
 
 ## 10. Whether the module should continue, pause, or wait
 Continue.
 No pause is required.
-No hard external dependency currently blocks Phase A progress.
+No business-logic work is added in this step.

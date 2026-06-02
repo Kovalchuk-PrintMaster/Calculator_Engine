@@ -3,16 +3,16 @@ module_name: "Calculator Engine"
 module_status: "active"
 priority: "high"
 current_phase: "phase_a_calculator_ux_application_flow_hardening"
-last_completed_step: "local_catalog_calculation_scenario_coverage"
-last_prompt_id: "2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening"
-last_report_id: "2026-06-02__calculator_engine__report__phase-a-progress"
-last_commit: "2bec354"
+last_completed_step: "blueprint_pull_and_self_check_bootstrap"
+last_prompt_id: "2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1"
+last_report_id: "2026-06-02__calculator_engine__report__blueprint-pull-self-check"
+last_commit: "pending"
 branch: "main"
 
 checks:
   lint: "deferred_not_configured"
-  tests: "ok_86_passed"
-  check_report: "deferred_not_configured"
+  tests: "ok_91_passed"
+  check_report: "deferred_pending_local_runner_definition"
 
 boundary:
   no_foreign_ownership: true
@@ -29,6 +29,8 @@ current_outputs:
   - "calculation_job_result_snapshot"
   - "human_report"
   - "external_report"
+  - "coordination_status"
+  - "blueprint_self_check_readiness"
 
 current_capabilities:
   - "external quote intake with normalized calculator processing"
@@ -39,9 +41,12 @@ current_capabilities:
   - "configurator draft submit with preview-submit-report consistency checks"
   - "local catalog scenario matrix for calculation hardening"
   - "catalog sync projection boundaries and sync run tracking"
+  - "pull blueprint updates through make blueprint-pull"
+  - "check blueprint global policy and standards availability"
+  - "check global and calculator-specific directive index availability"
 
 active_work:
-  - "blueprint coordination via git"
+  - "blueprint pull and self-check bootstrap"
   - "phase a continuation"
   - "calculator-facing contract stabilization"
 
@@ -54,23 +59,25 @@ paused_or_deferred:
   - "accounting integration"
 
 open_questions:
-  - "Should next macro block prioritize calculator-facing contract freeze or trusted handoff refinement?"
-  - "When should Library-driven projections become the primary scenario source over local catalog fixtures?"
-  - "Should check-report validation be added now or deferred until a repo-level check-report runner exists?"
+  - "Should check-report validation for coordination files be implemented now if make check-report already exists?"
+  - "Should blueprint-check later evolve from path readiness into structured directive parsing?"
+  - "After this coordination step, should next macro block remain contract stabilization?"
 
 recommended_next_step:
-  - "Commit coordination pack"
-  - "Align current goals with Blueprint using coordination files"
+  - "Run make blueprint-check"
+  - "Run make check"
+  - "Run make check-report"
+  - "Update coordination report with actual results"
   - "Continue Phase A with calculator-facing contract stabilization"
 
 risks:
-  - "local scenario catalog may drift from future Library projections"
-  - "api contract drift if response fixtures are not frozen early"
-  - "phase a scope may expand unless boundaries stay explicit"
+  - "blueprint local path may exist but content structure may drift"
+  - "check-report integration may require repo-specific adaptation"
+  - "coordination files may drift if not updated after each milestone"
 
 depends_on:
-  - "forprint_system_blueprint guidance"
-  - "future forprint_library canonical contracts"
+  - "forprint_system_blueprint repository availability"
+  - "shared coordination structure in blueprint repository"
 
 blocks: []
 

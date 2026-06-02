@@ -1,0 +1,14 @@
+blueprint_source:
+  repo_url: git@github.com:Kovalchuk-PrintMaster/Forprint_System_Blueprint.git
+  local_path: /srv/software_development/forprint-project/forprint_system_blueprint
+  branch: main
+
+  global_policy_root: coordination/global_policy
+  standards_root: coordination/standards
+
+  global_directives_index: coordination/directives/global/index.yaml
+  module_directives_index: coordination/directives/modules/calculator_engine/index.yaml
+
+  module_id: calculator_engine
+  status: active
+  self_check_mode: manual_first

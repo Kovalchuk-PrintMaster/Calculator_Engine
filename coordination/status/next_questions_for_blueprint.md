@@ -1,9 +1,9 @@
 # Next Questions for Blueprint
 
-1. For the next Calculator Engine macro block, should we prioritize:
+1. Should `make check-report` now validate coordination files, or may that remain deferred until a shared repo-level pattern is approved?
+
+2. Should `blueprint-check` stay a simple readiness/path validation tool for now, or should later phases parse directive payloads structurally?
+
+3. After completing this coordination step, should Calculator Engine return to:
    - calculator-facing contract stabilization
-   - or trusted handoff refinement?
-
-2. At what maturity point should Library-driven projections become the preferred scenario source over local scenario fixtures?
-
-3. Should repository-level check-report validation be introduced now for coordination files, or can it be deferred until a shared Control Plane validation approach is defined?
+   - or another coordination-related block first?
