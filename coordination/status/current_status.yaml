@@ -1,0 +1,77 @@
+module_id: "calculator_engine"
+module_name: "Calculator Engine"
+module_status: "active"
+priority: "high"
+current_phase: "phase_a_calculator_ux_application_flow_hardening"
+last_completed_step: "local_catalog_calculation_scenario_coverage"
+last_prompt_id: "2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening"
+last_report_id: "2026-06-02__calculator_engine__report__phase-a-progress"
+last_commit: "2bec354"
+branch: "main"
+
+checks:
+  lint: "deferred_not_configured"
+  tests: "ok_86_passed"
+  check_report: "deferred_not_configured"
+
+boundary:
+  no_foreign_ownership: true
+  no_production_api: true
+  no_live_write: true
+  no_real_integrations: true
+
+current_outputs:
+  - "quote_draft"
+  - "price_breakdown"
+  - "material_consumption_estimate"
+  - "configurator_context"
+  - "quote_preview"
+  - "calculation_job_result_snapshot"
+  - "human_report"
+  - "external_report"
+
+current_capabilities:
+  - "external quote intake with normalized calculator processing"
+  - "calculator job reports endpoint"
+  - "material consumption estimate for draft and calculation job"
+  - "configurator draft create/get/update flow"
+  - "configurator draft context and quote preview"
+  - "configurator draft submit with preview-submit-report consistency checks"
+  - "local catalog scenario matrix for calculation hardening"
+  - "catalog sync projection boundaries and sync run tracking"
+
+active_work:
+  - "blueprint coordination via git"
+  - "phase a continuation"
+  - "calculator-facing contract stabilization"
+
+paused_or_deferred:
+  - "real library canonical integration"
+  - "trusted handoff refinement"
+  - "production gateway integration"
+  - "crm integration"
+  - "warehouse integration"
+  - "accounting integration"
+
+open_questions:
+  - "Should next macro block prioritize calculator-facing contract freeze or trusted handoff refinement?"
+  - "When should Library-driven projections become the primary scenario source over local catalog fixtures?"
+  - "Should check-report validation be added now or deferred until a repo-level check-report runner exists?"
+
+recommended_next_step:
+  - "Commit coordination pack"
+  - "Align current goals with Blueprint using coordination files"
+  - "Continue Phase A with calculator-facing contract stabilization"
+
+risks:
+  - "local scenario catalog may drift from future Library projections"
+  - "api contract drift if response fixtures are not frozen early"
+  - "phase a scope may expand unless boundaries stay explicit"
+
+depends_on:
+  - "forprint_system_blueprint guidance"
+  - "future forprint_library canonical contracts"
+
+blocks: []
+
+updated_at: "2026-06-02T00:00:00Z"
