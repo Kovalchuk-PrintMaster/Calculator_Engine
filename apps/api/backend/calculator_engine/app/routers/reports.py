@@ -33,6 +33,13 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+from calculator_engine.app.schemas.calculation_output_package import (
+    CalculationOutputPackageSchema,
+)
+from calculator_engine.app.services.calculation_output_package import (
+    CalculationOutputPackageNotFoundError,
+    build_calculation_output_package_for_job,
+)
 
 class CalculationJobMetaResponse(BaseModel):
     job_public_id: str
@@ -65,6 +72,10 @@ class CalculationJobReportEnvelope(BaseModel):
     data: CalculationJobReportData
     meta: ApiMeta
 
+class CalculationOutputPackageEnvelope(BaseModel):
+    status: Literal["ok"]
+    data: CalculationOutputPackageSchema
+    meta: ApiMeta
 
 class MaterialConsumptionEstimateEnvelope(BaseModel):
     status: Literal["ok"]
@@ -184,5 +195,30 @@ def get_job_material_consumption_estimate(job_public_id: str):
         data=MaterialConsumptionEstimateSchema.model_validate(
             _material_consumption_estimate_to_dict(result)
         ),
+        meta=build_api_meta(),
+    )
+
+@router.get(
+    "/{job_public_id}/output-package",
+    response_model=CalculationOutputPackageEnvelope,
+    summary="Get calculation output package for saved calculation job",
+)
+def get_job_output_package(job_public_id: str):
+    try:
+        result = build_calculation_output_package_for_job(
+            job_public_id=job_public_id
+        )
+    except CalculationOutputPackageNotFoundError as exc:
+        return build_api_error_response(
+            status_code=404,
+            code="calculation_job_not_found",
+            message="Calculation job not found.",
+            detail=str(exc),
+            retryable=False,
+        )
+
+    return CalculationOutputPackageEnvelope(
+        status="ok",
+        data=result,
         meta=build_api_meta(),
     )

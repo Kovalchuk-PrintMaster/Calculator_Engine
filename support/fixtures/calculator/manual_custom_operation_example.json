@@ -1,0 +1,8 @@
+{
+  "operation_code": "custom_corner_rounding",
+  "display_name": "Custom corner rounding",
+  "reason": "Manager requested non-standard finishing handled outside default catalog route.",
+  "price_impact": "120.00",
+  "currency": "EUR",
+  "notes": "Manual custom operation kept as draft only."
+}

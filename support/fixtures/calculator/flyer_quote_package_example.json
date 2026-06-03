@@ -1,0 +1,165 @@
+{
+  "package_id": "pkg-flyer-001",
+  "calculation_id": "job-flyer-001",
+  "quote_draft": {
+    "quote_id": "quote-flyer-001",
+    "calculation_id": "job-flyer-001",
+    "source": "external",
+    "brand_code": "printmaster_pl",
+    "product_template_code": "flyer_a5_standard",
+    "material_code": "glossy_art_150",
+    "quantity": 1000,
+    "currency": "EUR",
+    "subtotal": "4200.00",
+    "total": "4200.00",
+    "selected_operation_codes": [],
+    "route_codes": ["guillotine_cut", "digital_print"],
+    "summary_lines": [
+      "Glossy Art 150: 2400.00 EUR"
+    ]
+  },
+  "order_draft": {
+    "order_draft_id": "order-draft-flyer-001",
+    "calculation_id": "job-flyer-001",
+    "source": "external",
+    "brand_code": "printmaster_pl",
+    "customer_ref": "site:SITE-CUSTOMER-888",
+    "external_order_ref": "SITE-ORDER-FLYER-001",
+    "external_customer_ref": "SITE-CUSTOMER-888",
+    "product_template_code": "flyer_a5_standard",
+    "material_code": "glossy_art_150",
+    "quantity": 1000,
+    "currency": "EUR",
+    "estimated_total": "4200.00",
+    "selected_operation_codes": [],
+    "downstream_refs": {
+      "operational_registry_order_ref": null,
+      "accounting_package_ref": null,
+      "prepress_package_ref": null
+    }
+  },
+  "price_breakdown": {
+    "currency": "EUR",
+    "subtotal": "4200.00",
+    "total": "4200.00",
+    "route": [
+      {
+        "operation_code": "guillotine_cut",
+        "operation_name": "Cutting",
+        "operation_group": "cutting",
+        "handler_code": "guillotine_cut",
+        "sequence_order": 10,
+        "source": "required"
+      },
+      {
+        "operation_code": "digital_print",
+        "operation_name": "Digital print",
+        "operation_group": "print",
+        "handler_code": "digital_print",
+        "sequence_order": 20,
+        "source": "default"
+      }
+    ],
+    "lines": [
+      {
+        "code": "material:glossy_art_150",
+        "name": "Glossy Art 150",
+        "category": "material",
+        "quantity": 1050,
+        "unit": "sheet",
+        "unit_price": "2.2857",
+        "total": "2400.00",
+        "meta": {
+          "requested_quantity": 1000,
+          "waste_percent": "5.00"
+        }
+      }
+    ]
+  },
+  "material_consumption_estimate": {
+    "estimate_id": "estimate-flyer-quote-packagele-001",
+    "context_type": "calculation_job",
+    "source_ref": "job-flyer-001",
+    "draft_ref": null,
+    "quote_ref": "job-flyer-001",
+    "calculation_job_ref": "job-flyer-001",
+    "material_ref": "glossy_art_150",
+    "material_name_snapshot": "Glossy Art 150",
+    "requested_quantity": 1000,
+    "actual_material_quantity": 1050,
+    "waste_quantity": 5,
+    "unit": "sheet",
+    "waste_percent": "5.00",
+    "confidence_level": "high",
+    "calculation_basis": "submit_human_report",
+    "warnings": [],
+    "metadata": {
+      "requested_quantity": 1000,
+      "waste_percent": "5.00"
+    },
+    "created_at": "2026-06-02T00:00:00+00:00"
+  },
+  "production_method_plan": {
+    "method_code": "route_based_production_plan",
+    "method_name": "Route-based production plan",
+    "route_codes": ["guillotine_cut", "digital_print"],
+    "assumptions": [
+      "route_based_production_plan",
+      "selected_operations=none",
+      "catalog_source=local_projection"
+    ]
+  },
+  "operation_sequence": {
+    "route_codes": ["guillotine_cut", "digital_print"],
+    "steps": [
+      {
+        "operation_code": "guillotine_cut",
+        "operation_name": "Cutting",
+        "operation_group": "cutting",
+        "handler_code": "guillotine_cut",
+        "sequence_order": 10,
+        "source": "required"
+      },
+      {
+        "operation_code": "digital_print",
+        "operation_name": "Digital print",
+        "operation_group": "print",
+        "handler_code": "digital_print",
+        "sequence_order": 20,
+        "source": "default"
+      }
+    ]
+  },
+  "accounting_line_drafts": [
+    {
+      "code": "material:glossy_art_150",
+      "name": "Glossy Art 150",
+      "category": "material",
+      "amount": "2400.00",
+      "currency": "EUR",
+      "quantity": 1050,
+      "unit": "sheet"
+    }
+  ],
+  "prepress_requirement_drafts": [
+    {
+      "requirement_code": "print_ready_pdf",
+      "title": "Print-ready PDF",
+      "description": "Provide final print-ready PDF export for production.",
+      "required": true,
+      "source": "calculator_default"
+    }
+  ],
+  "validation_warnings": [],
+  "manual_custom_operation_drafts": [],
+  "source_context": {
+    "origin": "configurator_submit",
+    "source": "external",
+    "brand_code": "printmaster_pl",
+    "used_catalog_source": "local_projection",
+    "calculation_mode": "sandbox",
+    "source_locale": "pl",
+    "source_currency": "EUR"
+  },
+  "created_at": "2026-06-02T00:00:00+00:00"
+}
