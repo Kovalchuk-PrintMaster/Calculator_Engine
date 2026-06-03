@@ -179,7 +179,7 @@ check: ## Базова перевірка проєкту
 	$(PY) apps/admin/manage.py check
 	$(MAKE) test
 
-	.PHONY: check-env
+.PHONY: check-env
 check-env: ## Показати ключові змінні з .env (без секретів)
 	@echo "POSTGRES_USER=$(PGUSER)"
 	@echo "POSTGRES_DB=$(PGDB)"

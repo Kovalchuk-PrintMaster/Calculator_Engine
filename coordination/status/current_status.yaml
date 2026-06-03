@@ -1,84 +1,74 @@
-module_id: "calculator_engine"
-module_name: "Calculator Engine"
-module_status: "active"
-priority: "high"
-current_phase: "phase_a_calculator_ux_application_flow_hardening"
-last_completed_step: "blueprint_pull_and_self_check_bootstrap"
-last_prompt_id: "2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1"
-last_report_id: "2026-06-02__calculator_engine__report__blueprint-pull-self-check"
-last_commit: "pending"
-branch: "main"
-
+module_id: calculator_engine
+module_name: Calculator Engine
+module_status: active
+priority: p0
+current_phase: phase_a_calculator_ux_application_flow_hardening
+last_completed_step: blueprint_pull_and_self_check_bootstrap
+last_prompt_id: 2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1
+last_report_id: 2026-06-02__calculator_engine__report__blueprint-pull-self-check
+last_commit: pending
+branch: main
 checks:
-  lint: "deferred_not_configured"
-  tests: "ok_91_passed"
-  check_report: "deferred_pending_local_runner_definition"
-
+  lint: deferred_not_configured
+  tests: ok_91_passed
+  check_report: deferred_pending_local_runner_definition
 boundary:
   no_foreign_ownership: true
   no_production_api: true
   no_live_write: true
   no_real_integrations: true
-
 current_outputs:
-  - "quote_draft"
-  - "price_breakdown"
-  - "material_consumption_estimate"
-  - "configurator_context"
-  - "quote_preview"
-  - "calculation_job_result_snapshot"
-  - "human_report"
-  - "external_report"
-  - "coordination_status"
-  - "blueprint_self_check_readiness"
-
+- quote_draft
+- price_breakdown
+- material_consumption_estimate
+- configurator_context
+- quote_preview
+- calculation_job_result_snapshot
+- human_report
+- external_report
+- coordination_status
+- blueprint_self_check_readiness
 current_capabilities:
-  - "external quote intake with normalized calculator processing"
-  - "calculator job reports endpoint"
-  - "material consumption estimate for draft and calculation job"
-  - "configurator draft create/get/update flow"
-  - "configurator draft context and quote preview"
-  - "configurator draft submit with preview-submit-report consistency checks"
-  - "local catalog scenario matrix for calculation hardening"
-  - "catalog sync projection boundaries and sync run tracking"
-  - "pull blueprint updates through make blueprint-pull"
-  - "check blueprint global policy and standards availability"
-  - "check global and calculator-specific directive index availability"
-
+- external quote intake with normalized calculator processing
+- calculator job reports endpoint
+- material consumption estimate for draft and calculation job
+- configurator draft create/get/update flow
+- configurator draft context and quote preview
+- configurator draft submit with preview-submit-report consistency checks
+- local catalog scenario matrix for calculation hardening
+- catalog sync projection boundaries and sync run tracking
+- pull blueprint updates through make blueprint-pull
+- check blueprint global policy and standards availability
+- check global and calculator-specific directive index availability
 active_work:
-  - "blueprint pull and self-check bootstrap"
-  - "phase a continuation"
-  - "calculator-facing contract stabilization"
-
+- blueprint pull and self-check bootstrap
+- phase a continuation
+- calculator-facing contract stabilization
 paused_or_deferred:
-  - "real library canonical integration"
-  - "trusted handoff refinement"
-  - "production gateway integration"
-  - "crm integration"
-  - "warehouse integration"
-  - "accounting integration"
-
+- real library canonical integration
+- trusted handoff refinement
+- production gateway integration
+- crm integration
+- warehouse integration
+- accounting integration
 open_questions:
-  - "Should check-report validation for coordination files be implemented now if make check-report already exists?"
-  - "Should blueprint-check later evolve from path readiness into structured directive parsing?"
-  - "After this coordination step, should next macro block remain contract stabilization?"
-
+- Should check-report validation for coordination files be implemented now if make
+  check-report already exists?
+- Should blueprint-check later evolve from path readiness into structured directive
+  parsing?
+- After this coordination step, should next macro block remain contract stabilization?
 recommended_next_step:
-  - "Run make blueprint-check"
-  - "Run make check"
-  - "Run make check-report"
-  - "Update coordination report with actual results"
-  - "Continue Phase A with calculator-facing contract stabilization"
-
+- Run make blueprint-check
+- Run make check
+- Run make check-report
+- Update coordination report with actual results
+- Continue Phase A with calculator-facing contract stabilization
 risks:
-  - "blueprint local path may exist but content structure may drift"
-  - "check-report integration may require repo-specific adaptation"
-  - "coordination files may drift if not updated after each milestone"
-
+- blueprint local path may exist but content structure may drift
+- check-report integration may require repo-specific adaptation
+- coordination files may drift if not updated after each milestone
 depends_on:
-  - "forprint_system_blueprint repository availability"
-  - "shared coordination structure in blueprint repository"
-
+- forprint_system_blueprint repository availability
+- shared coordination structure in blueprint repository
 blocks: []
-
-updated_at: "2026-06-02T00:00:00Z"
+updated_at: '2026-06-02T00:00:00Z'

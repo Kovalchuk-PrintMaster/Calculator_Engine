@@ -1,37 +1,25 @@
 reports:
-  - report_id: "2026-06-02__calculator_engine__report__phase-a-progress"
-    responds_to_prompt_id: "2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening"
-    status: "completed"
-    report_file: "coordination/reports/completion/2026-06-02__calculator_engine__report__phase-a-progress__responds-to-2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening.md"
-    commit: "2bec354"
-    pushed: true
-    checks:
-      lint: "deferred_not_configured"
-      tests: "ok_86_passed"
-      check_report: "deferred_not_configured"
-
-  - report_id: "2026-06-02__calculator_engine__report__phase-a-progress"
-    responds_to_prompt_id: "2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening"
-    status: "completed"
-    report_file: "coordination/reports/completion/2026-06-02__calculator_engine__report__phase-a-progress__responds-to-2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening.md"
-    commit: "2bec354"
-    pushed: true
-    checks:
-      lint: "deferred_not_configured"
-      tests: "ok_86_passed"
-      check_report: "deferred_not_configured"
-
-  - report_id: "2026-06-02__calculator_engine__report__blueprint-pull-self-check"
-    responds_to_prompt_id: "2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1"
-    status: "completed"
-    checks.tests: "ok_91_passed"
-    checks.blueprint_check: "ok"
-    checks.check_report: "deferred_pending_local_runner_definition"
-    report_file: "coordination/reports/completion/2026-06-02__calculator_engine__report__blueprint-pull-self-check.md"
-    commit: "pending"
-    pushed: false
-    checks:
-      lint: "deferred_not_configured"
-      tests: "pending"
-      check_report: "pending"
-      blueprint_check: "pending"
+- report_id: 2026-06-02__calculator_engine__report__phase-a-progress
+  responds_to_prompt_id: 2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening
+  status: completed
+  report_file: coordination/reports/completion/2026-06-02__calculator_engine__report__phase-a-progress__responds-to-2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening.md
+  commit: 2bec354
+  pushed: true
+  checks:
+    lint: deferred_not_configured
+    tests: ok_86_passed
+    check_report: deferred_not_configured
+- report_id: 2026-06-02__calculator_engine__report__blueprint-pull-self-check
+  responds_to_prompt_id: 2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1
+  status: completed
+  checks.tests: ok_91_passed
+  checks.blueprint_check: ok
+  checks.check_report: deferred_pending_local_runner_definition
+  report_file: coordination/reports/completion/2026-06-02__calculator_engine__report__blueprint-pull-self-check.md
+  commit: pending
+  pushed: false
+  checks:
+    lint: deferred_not_configured
+    tests: pending
+    check_report: pending
+    blueprint_check: pending

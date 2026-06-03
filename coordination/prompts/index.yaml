@@ -1,40 +1,22 @@
 prompts:
-  - prompt_id: "2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening"
-    status: "received"
-    source: "forprint_system_blueprint"
-    received_at: "2026-06-02"
-    file: "coordination/prompts/received/2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening.md"
-    expected_report_id: "2026-06-02__calculator_engine__report__phase-a-progress"
-    related_phase: "phase_a_calculator_ux_application_flow_hardening"
-
-  - prompt_id: "2026-06-02__calculator_engine__apply-module-coordination-standard"
-    status: "received"
-    source: "forprint_system_blueprint"
-    received_at: "2026-06-02"
-    file: "coordination/prompts/received/2026-06-02__calculator_engine__apply-module-coordination-standard.md"
-    expected_report_id: "2026-06-02__calculator_engine__report__coordination-standard-application"
-    related_phase: "coordination_bootstrap"
-
-  - prompt_id: "2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening"
-    status: "received"
-    source: "forprint_system_blueprint"
-    received_at: "2026-06-02"
-    file: "coordination/prompts/received/2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening.md"
-    expected_report_id: "2026-06-02__calculator_engine__report__phase-a-progress"
-    related_phase: "phase_a_calculator_ux_application_flow_hardening"
-
-  - prompt_id: "2026-06-02__calculator_engine__apply-module-coordination-standard"
-    status: "received"
-    source: "forprint_system_blueprint"
-    received_at: "2026-06-02"
-    file: "coordination/prompts/received/2026-06-02__calculator_engine__apply-module-coordination-standard.md"
-    expected_report_id: "2026-06-02__calculator_engine__report__coordination-standard-application"
-    related_phase: "coordination_bootstrap"
-
-  - prompt_id: "2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1"
-    status: "received"
-    source: "forprint_system_blueprint"
-    received_at: "2026-06-02"
-    file: "coordination/prompts/received/2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1.md"
-    expected_report_id: "2026-06-02__calculator_engine__report__blueprint-pull-self-check"
-    related_phase: "coordination_blueprint_pull_self_check"
+- prompt_id: 2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening
+  status: received
+  source: forprint_system_blueprint
+  received_at: '2026-06-02'
+  file: coordination/prompts/received/2026-06-02__calculator_engine__phase-a-calculator-ux-application-flow-hardening.md
+  expected_report_id: 2026-06-02__calculator_engine__report__phase-a-progress
+  related_phase: phase_a_calculator_ux_application_flow_hardening
+- prompt_id: 2026-06-02__calculator_engine__apply-module-coordination-standard
+  status: received
+  source: forprint_system_blueprint
+  received_at: '2026-06-02'
+  file: coordination/prompts/received/2026-06-02__calculator_engine__apply-module-coordination-standard.md
+  expected_report_id: 2026-06-02__calculator_engine__report__coordination-standard-application
+  related_phase: coordination_bootstrap
+- prompt_id: 2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1
+  status: received
+  source: forprint_system_blueprint
+  received_at: '2026-06-02'
+  file: coordination/prompts/received/2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1.md
+  expected_report_id: 2026-06-02__calculator_engine__report__blueprint-pull-self-check
+  related_phase: coordination_blueprint_pull_self_check
