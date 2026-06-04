@@ -72,3 +72,21 @@ Then continue functional development from an aligned checkpoint.
 Continue in controlled mode.
 
 Functional work is not blocked, but temporary catalog expansion should pause until Blueprint alignment is confirmed.
+
+## Blueprint coordination awareness
+
+Calculator Engine supports Blueprint pull and Blueprint check workflow.
+
+The module coordination status should be reviewed against:
+
+- Blueprint global policy;
+- Blueprint module policy for calculator_engine;
+- Blueprint standards;
+- calculator-specific directives
+
+Global policy and standards are used as orientation and alignment baseline. They do not authorize large refactors by themselves.
+
+## Calculator-specific directives
+
+Calculator Engine must check calculator-specific directives after Blueprint pull and Blueprint check.
+"""
