@@ -109,3 +109,23 @@ Manual custom operation drafts are preserved as explicit downstream-safe draft s
 
 They do not create production workflow ownership.
 They only keep calculator-side structured intent.
+
+## Contract stability
+
+Calculation Output Package is intended to become a stable calculator-facing output contract.
+
+The contract should remain explicit for:
+
+- quote_draft
+- order_draft
+- price_breakdown
+- material_consumption_estimate
+- production_method_plan
+- operation_sequence
+- accounting_line_drafts
+- prepress_requirement_drafts
+- validation_warnings
+- manual_custom_operation_drafts
+- source_context
+
+This contract is designed for future downstream consumption without giving Calculator ownership of downstream registries.
