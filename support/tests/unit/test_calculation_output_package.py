@@ -108,11 +108,15 @@ def test_warnings_and_manual_custom_operations_are_preserved() -> None:
         ],
     )
 
-    assert package.validation_warnings[0].code == "manual_review"
+    warning_codes = [item.code for item in package.validation_warnings]
+
+    assert "manual_review" in warning_codes
+    assert "manual_price_confirmation_recommended" in warning_codes
+    assert "waste_assumption_applied" in warning_codes
+
     assert package.manual_custom_operation_drafts[0].operation_code == (
         "custom_corner_rounding"
     )
-
 
 def test_output_package_is_json_serializable() -> None:
     submit_payload = _build_submit_payload()

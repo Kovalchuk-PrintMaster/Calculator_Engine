@@ -94,3 +94,18 @@ Current intended access pattern:
 - report-facing output package endpoint
 
 This still does not create direct runtime integration with Operational Registry, Accounting, or Prepress.
+
+## Validation warnings and manual custom operations
+
+Calculation Output Package may include validation warnings.
+
+Warnings are used for calculator-level caution signals such as:
+
+- manual review recommendation
+- configured waste assumption notice
+- non-standard finishing attention
+
+Manual custom operation drafts are preserved as explicit downstream-safe draft structures.
+
+They do not create production workflow ownership.
+They only keep calculator-side structured intent.

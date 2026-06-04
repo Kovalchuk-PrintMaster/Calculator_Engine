@@ -6,6 +6,7 @@ from typing import Any
 from uuid import uuid4
 from uuid import UUID
 from calculator_engine.adapters.django_bootstrap import setup_django
+from decimal import Decimal
 
 from calculator_engine.app.schemas.calculation_output_package import (
     AccountingLineDraftSchema,
@@ -347,9 +348,16 @@ def build_calculation_output_package_from_submit_payload(
         submit_payload=submit_payload
     )
 
+    merged_warnings = merge_validation_warnings(
+        generated=build_default_validation_warnings_from_submit_payload(
+            submit_payload=submit_payload
+        ),
+        explicit=validation_warnings,
+    )
+
     warnings_models = [
         ValidationWarningSchema.model_validate(item)
-        for item in (validation_warnings or [])
+        for item in merged_warnings
     ]
     manual_ops_models = [
         ManualCustomOperationDraftSchema.model_validate(item)
@@ -450,3 +458,58 @@ def build_calculation_output_package_for_job(
         validation_warnings=validation_warnings,
         manual_custom_operation_drafts=manual_custom_operation_drafts,
     )
+
+def build_default_validation_warnings_from_submit_payload(
+    *,
+    submit_payload: dict[str, Any],
+) -> list[dict[str, Any]]:
+    human_report = _as_dict(submit_payload.get("human_report"))
+    selected_ops = list(human_report.get("selected_operation_codes") or [])
+
+    warnings: list[dict[str, Any]] = []
+
+    if "foil" in selected_ops:
+        warnings.append(
+            {
+                "code": "manual_price_confirmation_recommended",
+                "message": "Recommended manual review for foil finishing before final order creation.",
+                "severity": "warning",
+                "field": "selected_operation_codes",
+            }
+        )
+
+    material_line = _find_material_line(human_report)
+    meta = _as_dict(material_line.get("meta"))
+    waste_percent = Decimal(str(meta.get("waste_percent", "0.00")))
+
+    if waste_percent > Decimal("0.00"):
+        warnings.append(
+            {
+                "code": "waste_assumption_applied",
+                "message": "Material estimate includes configured waste assumption.",
+                "severity": "info",
+                "field": "material_consumption_estimate",
+            }
+        )
+
+    return warnings
+
+
+def merge_validation_warnings(
+    *,
+    generated: list[dict[str, Any]],
+    explicit: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    seen: set[tuple[str, str | None]] = set()
+
+    for item in [*(generated or []), *(explicit or [])]:
+        code = str(item.get("code", "")).strip()
+        field = item.get("field")
+        key = (code, str(field) if field is not None else None)
+        if not code or key in seen:
+            continue
+        seen.add(key)
+        result.append(item)
+
+    return result
