@@ -1,9 +1,9 @@
 # Next Questions for Blueprint
 
-1. Should `make check-report` now validate coordination files, or may that remain deferred until a shared repo-level pattern is approved?
+1. What is the exact resume condition after this final coordination checkpoint?
 
-2. Should `blueprint-check` stay a simple readiness/path validation tool for now, or should later phases parse directive payloads structurally?
+2. When will Blueprint finalize sync command standards and the central coordination validator/fixer?
 
-3. After completing this coordination step, should Calculator Engine return to:
-   - calculator-facing contract stabilization
-   - or another coordination-related block first?
+3. When will the cleaner Library catalog seed / sync direction be ready so Calculator can reduce dependence on temporary sandbox catalog helpers?
+
+4. Which parts of CalculationOutputPackage should later be standardized system-wide versus kept module-specific?
