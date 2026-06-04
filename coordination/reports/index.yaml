@@ -23,3 +23,15 @@ reports:
     tests: pending
     check_report: pending
     blueprint_check: pending
+- report_id: "2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment"
+  responds_to_prompt_id: "2026-06-02__calculator_engine__functional-development__calculation-output-package-foundation"
+  status: "completed"
+  report_file: "coordination/reports/completion/2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment.md"
+  commit: "29cf3e0"
+  pushed: true
+  checks:
+    lint: "deferred_not_configured"
+    tests: "ok_105_passed"
+    check_report: "deferred_pending_local_runner_definition"
+    blueprint_check: "ok"
+
