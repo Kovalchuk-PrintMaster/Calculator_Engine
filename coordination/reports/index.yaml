@@ -31,4 +31,16 @@ reports:
     tests: "ok_105_passed"
     check_report: "deferred_pending_local_runner_definition"
     blueprint_check: "ok"
+- report_id: "2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap"
+  responds_to_prompt_id: "2026-06-03__calculator_engine__directive__blueprint-active-directive-sync-import-v1"
+  status: "completed"
+  report_file: "coordination/reports/completion/2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap.md"
+  commit: "pending"
+  pushed: false
+  checks:
+    lint: "deferred_not_configured"
+    tests: "pending"
+    check_report: "deferred_pending_local_runner_definition"
+    blueprint_check: "pending"
+    blueprint_sync_directives: "pending"
 

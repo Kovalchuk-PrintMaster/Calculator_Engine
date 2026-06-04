@@ -30,6 +30,8 @@ Calculation Output Package / QuoteDraft / OrderDraft foundation was completed, s
 - output package response fixtures/contracts
 - validation warnings and manual custom operation draft preservation
 - blueprint pull and self-check readiness
+- active Blueprint directive sync/import into local coordination prompt archive
+- duplicate-safe synchronization of active module directives
 
 ## 6. Current boundaries
 Calculator Engine remains calculation-focused.
@@ -67,6 +69,13 @@ Pause deeper temporary catalog expansion.
 Synchronize with Blueprint.
 Verify shared understanding of current module state and next target direction.
 Then continue functional development from an aligned checkpoint.
+Run:
+- `make blueprint-pull`
+- `make blueprint-check`
+- `make blueprint-sync-directives`
+- `make check`
+
+Then review imported active directives locally before executing any of them.
 
 ## 10. Whether the module should continue, pause, or wait
 Continue in controlled mode.

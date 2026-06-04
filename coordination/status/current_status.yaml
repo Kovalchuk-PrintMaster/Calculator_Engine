@@ -3,10 +3,10 @@ module_name: Calculator Engine
 module_status: active
 priority: p0
 current_phase: sync_checkpoint_before_catalog_alignment
-last_completed_step: calculation_output_package_contract_foundation
-last_prompt_id: 2026-06-02__calculator_engine__functional-development__calculation-output-package-foundation
-last_report_id: 2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment
-last_commit: 29cf3e0
+last_completed_step: "blueprint_active_directive_sync_bootstrap"
+last_prompt_id: "2026-06-03__calculator_engine__directive__blueprint-active-directive-sync-import-v1"
+last_report_id: "2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap"
+last_commit: "pending"
 branch: main
 checks:
   lint: deferred_not_configured
@@ -48,6 +48,8 @@ current_capabilities:
 - calculation output package builder from saved calculation job
 - report-facing output package endpoint
 - contract fixtures for output package response
+- "import active blueprint directives into coordination/prompts/received"
+- "sync blueprint directives into local coordination/prompts/index.yaml without duplicates"
 active_work:
 - sync with blueprint
 - verify shared understanding of current module state
@@ -71,10 +73,12 @@ open_questions:
 - Which parts of CalculationOutputPackage should stay module-specific and which should
   be standardized system-wide?
 recommended_next_step:
-- Use current coordination state as sync checkpoint with Blueprint
-- Verify Blueprint can read current repository state correctly
-- Align on catalog/sync direction before new functional expansion
-- Resume functional development only after shared checkpoint is confirmed
+recommended_next_step:
+- "Run make blueprint-pull"
+- "Run make blueprint-check"
+- "Run make blueprint-sync-directives"
+- "Run make check"
+- "Review newly imported active directives locally before execution"
 risks:
 - temporary sandbox catalog expansion could create avoidable drift before realistic
   synced projections are ready

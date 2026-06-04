@@ -225,7 +225,7 @@ UVICORN_PORT ?= 8000
 UVICORN_APP  := calculator_engine.app.main:app
 API_PYTHONPATH := "$(APP_DIR)/apps/api/backend:$(APP_DIR):$${PYTHONPATH:-}"
 
-.PHONY: uvicorn uvicorn-reload api-smoke blueprint-pull blueprint-check coordination-check
+.PHONY: uvicorn uvicorn-reload api-smoke 
 
 uvicorn: ## Запустити FastAPI через uvicorn
 	PYTHONPATH=$(API_PYTHONPATH) \
@@ -241,6 +241,7 @@ api-smoke: ## Швидка перевірка імпорту FastAPI app
 
 
 # --- Telegram -----------------------------------------------------------
+.PHONY: telegram-check telegram-send-test
 telegram-check: ## Перевірити Telegram token/chat_id
 	@set -a; . $(ENV_FILE); set +a; \
 	curl -s "https://api.telegram.org/bot$$CALC_TELEGRAM_ALERT_BOT_TOKEN/getMe"
@@ -251,10 +252,17 @@ telegram-send-test: ## Надіслати тестове повідомленн�
 	  -d "chat_id=$$CALC_TELEGRAM_ALERT_CHAT_ID" \
 	  -d "text=Calculator Engine test alert"
 
+.PHONY: blueprint-pull
 blueprint-pull:
 	git -C /srv/software_development/forprint-project/forprint_system_blueprint pull --ff-only
 
+.PHONY: blueprint-check
 blueprint-check:
 	$(PY) scripts/check_blueprint_instructions.py
 
+.PHONY: coordination-check
 coordination-check: blueprint-check
+
+.PHONY: blueprint-sync-directives
+blueprint-sync-directives:
+	$(PY) scripts/sync_blueprint_directives.py

@@ -20,3 +20,10 @@ prompts:
   file: coordination/prompts/received/2026-06-02__calculator_engine__directive__coordination-pull-and-calculator-focus-v1.md
   expected_report_id: 2026-06-02__calculator_engine__report__blueprint-pull-self-check
   related_phase: coordination_blueprint_pull_self_check
+- prompt_id: 2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1
+  directive_id: 2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1
+  status: received
+  source: forprint_system_blueprint
+  received_at: '2026-06-04'
+  file: coordination/prompts/received/2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1.md
+  expected_report_id: 2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause

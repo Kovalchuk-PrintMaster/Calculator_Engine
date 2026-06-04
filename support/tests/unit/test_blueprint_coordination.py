@@ -33,6 +33,7 @@ def test_makefile_contains_blueprint_targets() -> None:
     assert "blueprint-pull:" in content
     assert "blueprint-check:" in content
     assert "coordination-check:" in content
+    assert "blueprint-sync-directives:" in content
 
 
 def test_coordination_status_mentions_blueprint_pull_and_check() -> None:
@@ -42,6 +43,7 @@ def test_coordination_status_mentions_blueprint_pull_and_check() -> None:
     assert "global policy" in content
     assert "standards" in content
     assert "calculator-specific directives" in content or "calculator-specific directive" in content
+    assert "directive" in content
 
 
 def test_coordination_report_index_mentions_blueprint_pull_self_check() -> None:
