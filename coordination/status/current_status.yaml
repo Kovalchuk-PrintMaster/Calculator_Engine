@@ -1,98 +1,89 @@
-module_id: "calculator_engine"
-module_name: "Calculator Engine"
-module_status: "paused"
-priority: "high"
-current_phase: "final_coordination_checkpoint_and_controlled_pause"
-last_completed_step: "final_coordination_checkpoint_prepared"
-last_prompt_id: "2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1"
-last_report_id: "2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause"
-last_commit: "pending"
-branch: "main"
-
+module_id: calculator_engine
+module_name: Calculator Engine
+module_status: paused
+priority: p0
+current_phase: final_coordination_checkpoint_and_controlled_pause
+last_completed_step: final_coordination_checkpoint_prepared
+last_prompt_id: 2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1
+last_report_id: 2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause
+last_commit: eba5384
+branch: main
 checks:
-  lint: "deferred_not_configured"
-  tests: "ok_108_passed"
-  check_report: "deferred_pending_local_runner_definition"
-  blueprint_pull: "ok"
-  blueprint_check: "ok"
-  blueprint_sync_directives: "ok"
-
+  lint: deferred_not_configured
+  tests: ok_108_passed
+  check_report: deferred_pending_local_runner_definition
+  blueprint_pull: ok
+  blueprint_check: ok
+  blueprint_sync_directives: ok
 boundary:
   no_foreign_ownership: true
   no_production_api: true
   no_live_write: true
   no_real_integrations: true
-
 current_outputs:
-  - "quote_draft"
-  - "order_draft"
-  - "price_breakdown"
-  - "material_consumption_estimate"
-  - "configurator_context"
-  - "quote_preview"
-  - "calculation_job_result_snapshot"
-  - "human_report"
-  - "external_report"
-  - "calculation_output_package"
-  - "production_method_plan"
-  - "operation_sequence"
-  - "accounting_line_drafts"
-  - "prepress_requirement_drafts"
-  - "validation_warnings"
-  - "manual_custom_operation_drafts"
-
+- quote_draft
+- order_draft
+- price_breakdown
+- material_consumption_estimate
+- configurator_context
+- quote_preview
+- calculation_job_result_snapshot
+- human_report
+- external_report
+- calculation_output_package
+- production_method_plan
+- operation_sequence
+- accounting_line_drafts
+- prepress_requirement_drafts
+- validation_warnings
+- manual_custom_operation_drafts
 current_capabilities:
-  - "external quote intake with normalized calculator processing"
-  - "calculator job reports endpoint"
-  - "material consumption estimate for draft and calculation job"
-  - "configurator draft create/get/update flow"
-  - "configurator draft context and quote preview"
-  - "configurator draft submit with preview-submit-report consistency checks"
-  - "local catalog scenario matrix for calculation hardening"
-  - "catalog sync projection boundaries and sync run tracking"
-  - "blueprint pull and manual-first blueprint self-check"
-  - "blueprint active directive sync/import"
-  - "calculation output package builder from submit payload"
-  - "calculation output package builder from saved calculation job"
-  - "report-facing output package endpoint"
-  - "contract fixtures for output package response"
-
+- external quote intake with normalized calculator processing
+- calculator job reports endpoint
+- material consumption estimate for draft and calculation job
+- configurator draft create/get/update flow
+- configurator draft context and quote preview
+- configurator draft submit with preview-submit-report consistency checks
+- local catalog scenario matrix for calculation hardening
+- catalog sync projection boundaries and sync run tracking
+- blueprint pull and manual-first blueprint self-check
+- blueprint active directive sync/import
+- calculation output package builder from submit payload
+- calculation output package builder from saved calculation job
+- report-facing output package endpoint
+- contract fixtures for output package response
 active_work:
-  - "controlled temporary pause"
-  - "blueprint-aligned checkpoint handoff"
-
+- controlled temporary pause
+- blueprint-aligned checkpoint handoff
 paused_or_deferred:
-  - "further functional expansion"
-  - "further temporary sandbox catalog expansion"
-  - "quote_draft/order_draft enrichment beyond current foundation"
-  - "trusted handoff refinement"
-  - "real library canonical integration"
-  - "production gateway integration"
-  - "crm integration"
-  - "warehouse integration"
-  - "accounting integration"
-  - "prepress integration"
-
+- further functional expansion
+- further temporary sandbox catalog expansion
+- quote_draft/order_draft enrichment beyond current foundation
+- trusted handoff refinement
+- real library canonical integration
+- production gateway integration
+- crm integration
+- warehouse integration
+- accounting integration
+- prepress integration
 open_questions:
-  - "When will Blueprint finalize sync command standards after this checkpoint?"
-  - "When will cleaner Library catalog seed direction be ready for Calculator?"
-  - "Which parts of CalculationOutputPackage should later be standardized system-wide versus kept module-specific?"
-
+- When will Blueprint finalize sync command standards after this checkpoint?
+- When will cleaner Library catalog seed direction be ready for Calculator?
+- Which parts of CalculationOutputPackage should later be standardized system-wide
+  versus kept module-specific?
 recommended_next_step:
-  - "Do not add new functionality during pause"
-  - "Wait for Blueprint resume direction"
-  - "Resume from aligned checkpoint only after Blueprint clarifies next active path"
-
+- Do not add new functionality during pause
+- Wait for Blueprint resume direction
+- Resume from aligned checkpoint only after Blueprint clarifies next active path
 risks:
-  - "continuing functional growth before Blueprint checkpoint closure may create avoidable drift"
-  - "temporary sandbox catalog expansion should remain paused until cleaner synced direction is available"
-  - "output package standardization may later require cross-module adjustment"
-
+- continuing functional growth before Blueprint checkpoint closure may create avoidable
+  drift
+- temporary sandbox catalog expansion should remain paused until cleaner synced direction
+  is available
+- output package standardization may later require cross-module adjustment
 depends_on:
-  - "forprint_system_blueprint checkpoint review"
-  - "future library seed/sync direction"
-  - "future central coordination validator/fixer"
-
+- forprint_system_blueprint checkpoint review
+- future library seed/sync direction
+- future central coordination validator/fixer
 blocks: []
-
-updated_at: "2026-06-03T00:00:00Z"
+updated_at: '2026-06-03T00:00:00Z'

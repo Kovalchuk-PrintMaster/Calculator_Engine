@@ -20,40 +20,39 @@ reports:
     tests: ok_91_passed
     check_report: deferred_pending_local_runner_definition
     blueprint_check: ok
-- report_id: "2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment"
-  responds_to_prompt_id: "2026-06-02__calculator_engine__functional-development__calculation-output-package-foundation"
-  status: "completed"
-  report_file: "coordination/reports/completion/2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment.md"
-  commit: "29cf3e0"
+- report_id: 2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment
+  responds_to_prompt_id: 2026-06-02__calculator_engine__functional-development__calculation-output-package-foundation
+  status: completed
+  report_file: coordination/reports/completion/2026-06-02__calculator_engine__report__sync-checkpoint-before-catalog-alignment.md
+  commit: 29cf3e0
   pushed: true
   checks:
-    lint: "deferred_not_configured"
-    tests: "ok_105_passed"
-    check_report: "deferred_pending_local_runner_definition"
-    blueprint_check: "ok"
-- report_id: "2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap"
-  responds_to_prompt_id: "2026-06-03__calculator_engine__directive__blueprint-active-directive-sync-import-v1"
-  status: "completed"
-  report_file: "coordination/reports/completion/2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap.md"
-  commit: "pending"
-  pushed: false
+    lint: deferred_not_configured
+    tests: ok_105_passed
+    check_report: deferred_pending_local_runner_definition
+    blueprint_check: ok
+- report_id: 2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap
+  responds_to_prompt_id: 2026-06-03__calculator_engine__directive__blueprint-active-directive-sync-import-v1
+  status: completed
+  report_file: coordination/reports/completion/2026-06-03__calculator_engine__report__blueprint-active-directive-sync-bootstrap.md
+  commit: eba5384
+  pushed: true
   checks:
-    lint: "deferred_not_configured"
-    tests: "pending"
-    check_report: "deferred_pending_local_runner_definition"
-    blueprint_check: "pending"
-    blueprint_sync_directives: "pending"
-- report_id: "2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause"
-  responds_to_prompt_id: "2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1"
-  status: "completed"
-  report_file: "coordination/reports/completion/2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause.md"
-  commit: "pending"
-  pushed: false
+    lint: deferred_not_configured
+    tests: pending
+    check_report: deferred_pending_local_runner_definition
+    blueprint_check: pending
+    blueprint_sync_directives: pending
+- report_id: 2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause
+  responds_to_prompt_id: 2026-06-03__calculator_engine__directive__final-coordination-checkpoint-and-pause-v1
+  status: completed
+  report_file: coordination/reports/completion/2026-06-03__calculator_engine__report__final-coordination-checkpoint-and-pause.md
+  commit: eba5384
+  pushed: true
   checks:
-    lint: "deferred_not_configured"
-    tests: "ok_108_passed"
-    check_report: "deferred_pending_local_runner_definition"
-    blueprint_pull: "ok"
-    blueprint_check: "ok"
-    blueprint_sync_directives: "ok"
-
+    lint: deferred_not_configured
+    tests: ok_108_passed
+    check_report: deferred_pending_local_runner_definition
+    blueprint_pull: ok
+    blueprint_check: ok
+    blueprint_sync_directives: ok
