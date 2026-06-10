@@ -266,3 +266,49 @@ coordination-check: blueprint-check
 .PHONY: blueprint-sync-directives
 blueprint-sync-directives:
 	$(PY) scripts/sync_blueprint_directives.py
+
+
+# =============================================================================
+# ForPrint governance alignment
+# =============================================================================
+
+.PHONY: check-report
+check-report: ## Governance-compatible check report
+	@echo "== Calculator Engine check report =="
+	@if [ -f scripts/run_calculator_checks.py ]; then \
+		$(PY) scripts/run_calculator_checks.py; \
+	else \
+		echo "DEFERRED: dedicated Calculator check-report runner is not implemented yet."; \
+		echo "Running make check as current validation baseline."; \
+		$(MAKE) check; \
+	fi
+
+.PHONY: status-report
+status-report: ## Governance-compatible module status report
+	@echo "== Calculator Engine status report =="
+	@if [ -f scripts/export_module_status.py ]; then \
+		$(PY) scripts/export_module_status.py; \
+	else \
+		echo "DEFERRED: dedicated Calculator status-report exporter is not implemented yet."; \
+		echo "Module: calculator_engine"; \
+		echo "Status: active"; \
+		echo "Governance: partial_alignment"; \
+	fi
+
+.PHONY: coordination-fix
+coordination-fix: ## Safe coordination fixer placeholder
+	@echo "DEFERRED: automatic Calculator coordination fix is not implemented yet."
+
+.PHONY: module-policy-check
+module-policy-check: ## Check Calculator policy visibility through Blueprint
+	$(MAKE) blueprint-check
+
+.PHONY: governance-check
+governance-check: ## Run Calculator governance readiness checks
+	@echo "== Calculator Engine governance check =="
+	$(MAKE) blueprint-pull
+	$(MAKE) blueprint-check
+	$(MAKE) blueprint-sync-directives
+	$(MAKE) module-policy-check
+	$(MAKE) coordination-check
+	$(MAKE) status-report

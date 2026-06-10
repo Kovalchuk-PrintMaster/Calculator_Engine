@@ -1,0 +1,62 @@
+cat > forprint_module_manifest.yaml <<'YAML'
+module_id: calculator_engine
+module_name: Calculator Engine
+module_type: calculation_service
+status: active
+
+repository: git@github.com:Kovalchuk-PrintMaster/Calculator_Engine.git
+local_path: /srv/software_development/forprint-project/calculator_engine/app
+
+owner_role: pricing_and_calculation_engine
+
+responsibilities:
+  - calculate prices
+  - prepare calculation outputs
+  - prepare order draft data for handoff
+  - provide pricing/configuration previews
+  - keep calculator-specific rules and formulas
+
+does_not_own:
+  - client_account_truth
+  - operational_order_truth
+  - accounting_posting
+  - warehouse_stock_truth
+  - canonical_product_catalog
+  - canonical_material_catalog
+  - crm_dashboard
+  - telegram_runtime
+
+allowed_integrations:
+  - forprint_library_reference_read
+  - forprint_operational_registry_handoff_contracts
+  - forprint_system_blueprint_policy_read
+
+forbidden_integrations:
+  - direct_1c_write
+  - accounting_posting
+  - warehouse_stock_write
+  - production_runtime_mutation
+  - owning_client_database
+
+boundary:
+  no_foreign_ownership: true
+  no_live_write_to_accounting: true
+  no_warehouse_stock_truth: true
+  no_client_account_ownership: true
+  no_operational_order_ownership: true
+
+coordination:
+  blueprint_module_id: calculator_engine
+  governance_required: true
+  required_make_targets:
+    - check
+    - check-report
+    - status-report
+    - blueprint-pull
+    - blueprint-check
+    - blueprint-sync-directives
+    - coordination-check
+    - coordination-fix
+    - module-policy-check
+    - governance-check
+YAML
